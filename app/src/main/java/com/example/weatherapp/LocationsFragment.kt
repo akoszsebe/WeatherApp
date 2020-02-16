@@ -32,8 +32,21 @@ class LocationsFragment : Fragment() {
     }
 
     private fun subscribeUi(adapter: LocationAdapter) {
-        adapter.submitList(viewModel.locations)
-        binding.hasLocations = true
+        viewModel.getFavoriteLocationsWeather()
+            ?.subscribe(
+                { weather ->
+                    adapter.submitList(weather)
+                    binding.hasLocations = true
+                },
+                {
+                    print(it)
+                }
+            )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
     }
 
 }

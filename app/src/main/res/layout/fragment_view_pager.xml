@@ -39,6 +39,7 @@
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
             android:fitsSystemWindows="true"
             android:theme="@style/Theme.Weather.AppBarOverlay"
             app:elevation="0dp">
@@ -60,9 +61,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    android:gravity="center"
+                    android:gravity="start|center"
                     android:text="@string/app_name"
-                    android:textColor="?attr/colorPrimaryDark"
+                    android:textColor="@color/weather_gray_50"
                     android:textAppearance="?attr/textAppearanceHeadline5" />
 
                 </androidx.appcompat.widget.Toolbar>

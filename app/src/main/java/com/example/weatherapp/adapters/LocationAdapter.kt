@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.HomeViewPagerFragmentDirections
-import com.example.weatherapp.data.Location
+import com.example.weatherapp.data.model.Location
 import com.example.weatherapp.databinding.ListItemWeatherLocationsBinding
 
 class LocationAdapter : ListAdapter<Location, RecyclerView.ViewHolder>(LocationDiffCallback()) {
@@ -38,8 +38,8 @@ class LocationAdapter : ListAdapter<Location, RecyclerView.ViewHolder>(LocationD
             view: View
         ) {
             val direction =
-                HomeViewPagerFragmentDirections.actionViewPagerFragmentToPlantDetailFragment(
-                    location.locationId
+                HomeViewPagerFragmentDirections.actionViewPagerFragmentToWeatherDetailFragment(
+                    location.id!!
                 )
             view.findNavController().navigate(direction)
         }
@@ -56,7 +56,7 @@ class LocationAdapter : ListAdapter<Location, RecyclerView.ViewHolder>(LocationD
 private class LocationDiffCallback : DiffUtil.ItemCallback<Location>() {
 
     override fun areItemsTheSame(oldItem: Location, newItem: Location): Boolean {
-        return oldItem.locationId == newItem.locationId
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: Location, newItem: Location): Boolean {

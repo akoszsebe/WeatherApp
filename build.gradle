@@ -28,6 +28,10 @@ buildscript {
     ext.testExtJunit = '1.1.0'
     ext.uiAutomatorVersion = '2.2.0'
     ext.viewPagerVersion = '1.0.0'
+    ext.retrofitVersion = '2.4.0'
+    ext.rxjavaVersion = '2.1.13'
+    ext.rxandroidVersion = '2.0.1'
+    ext.loggingInterceptorVersion = '4.2.1'
 
     repositories {
         google()
