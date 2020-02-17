@@ -1,38 +1,29 @@
 package com.example.weatherapp
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import com.google.android.material.tabs.TabLayoutMediator
 import com.example.weatherapp.adapters.CURRENT_LOCATION_PAGE_INDEX
 import com.example.weatherapp.adapters.LOCATIONS_PAGE_INDEX
 import com.example.weatherapp.adapters.WeatherPagerAdapter
+import com.example.weatherapp.base.BaseFragment
 import com.example.weatherapp.databinding.FragmentViewPagerBinding
+import com.google.android.material.tabs.TabLayoutMediator
 
-class HomeViewPagerFragment: Fragment(){
+class HomeViewPagerFragment : BaseFragment<FragmentViewPagerBinding>(R.layout.fragment_view_pager) {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val binding = FragmentViewPagerBinding.inflate(inflater, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val tabLayout = binding.tabs
         val viewPager = binding.viewPager
 
         viewPager.adapter = WeatherPagerAdapter(this)
 
-        // Set the icon and text for each tab
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = getTabTitle(position)
         }.attach()
 
         (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
-
-        return binding.root
     }
 
     private fun getTabTitle(position: Int): String? {

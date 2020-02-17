@@ -1,44 +1,30 @@
 package com.example.weatherapp
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.example.weatherapp.base.BaseFragment
 import com.example.weatherapp.databinding.FragmentCurrentLocationBinding
 import com.example.weatherapp.utils.InjectorUtils
 import com.example.weatherapp.viewmodels.CurrentLocationViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import io.reactivex.disposables.CompositeDisposable
 
-class CurrentLocationFragment : Fragment() {
-
-    private lateinit var binding: FragmentCurrentLocationBinding
+class CurrentLocationFragment : BaseFragment<FragmentCurrentLocationBinding>(R.layout.fragment_current_location) {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
-    private val disposables: CompositeDisposable = CompositeDisposable()
 
     private val viewModel: CurrentLocationViewModel by viewModels {
         InjectorUtils.provideCurrentLocationViewModelFactory(this)
     }
 
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentCurrentLocationBinding.inflate(inflater, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.context!!)
         subscribeUi()
-        return binding.root
     }
 
     private fun subscribeUi() {
@@ -66,12 +52,5 @@ class CurrentLocationFragment : Fragment() {
                 if (Build.VERSION.SDK_INT >= 23)
                     this.requestPermissions( arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
             }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if (!disposables.isDisposed) {
-            disposables.dispose()
-        }
     }
 }

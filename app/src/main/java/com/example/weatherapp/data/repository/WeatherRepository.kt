@@ -1,17 +1,21 @@
 package com.example.weatherapp.data.repository
 
 import com.example.weatherapp.data.model.Location
+import com.example.weatherapp.data.persistance.dao.LocationWeatherDao
 import com.example.weatherapp.networking.api.WeatherApiService
+import com.example.weatherapp.utils.ConnectionHelper
 import io.reactivex.Single
 import io.reactivex.SingleEmitter
 
 class WeatherRepository(
-    private val weatherApiService: WeatherApiService
-){
+    private val weatherApiService: WeatherApiService,
+    private val locationWeatherDao: LocationWeatherDao,
+    private val connectionHelper: ConnectionHelper
+) {
 
-    fun getWeatherFromLatLon(lat: Double,lon : Double): Single<Location> {
+    fun getWeatherFromLatLon(lat: Double, lon: Double): Single<Location> {
         return Single.create<Location> { emitter: SingleEmitter<Location> ->
-                loadWeatherLatLonFromNetwork(lat,lon, emitter)
+            loadWeatherLatLonFromNetwork(lat, lon, emitter)
         }
     }
 
@@ -31,9 +35,13 @@ class WeatherRepository(
 //        }
 //    }
 
-    private fun loadWeatherLatLonFromNetwork(lat: Double,lon : Double, emitter: SingleEmitter<Location>) {
+    private fun loadWeatherLatLonFromNetwork(
+        lat: Double,
+        lon: Double,
+        emitter: SingleEmitter<Location>
+    ) {
         try {
-            val weather = weatherApiService.getWeatherForLatLon(lat,lon).execute().body()
+            val weather = weatherApiService.getWeatherForLatLon(lat, lon).execute().body()
             if (weather != null) {
 //                userDao.insertAll(users.items)
 //                val currentTime = calendarWrapper.getCurrentTimeInMillis()
@@ -46,9 +54,13 @@ class WeatherRepository(
         }
     }
 
-    private fun loadWeatherForLocationsFromNetwork(ids : List<Long>, emitter: SingleEmitter<List<Location>>) {
+    private fun loadWeatherForLocationsFromNetwork(
+        ids: List<Long>,
+        emitter: SingleEmitter<List<Location>>
+    ) {
         try {
-            val weather = weatherApiService.getWeatherForLocations(ids.joinToString(",")).execute().body()
+            val weather =
+                weatherApiService.getWeatherForLocations(ids.joinToString(",")).execute().body()
             if (weather != null) {
 //                userDao.insertAll(users.items)
 //                val currentTime = calendarWrapper.getCurrentTimeInMillis()
