@@ -16,7 +16,7 @@ class CurrentLocationViewModel internal constructor(
     private val weatherRepository: WeatherRepository =
         InjectorUtils.provideWeatherRepository(InjectorUtils.provideRetrofit())
 
-    fun getCurrentLocationWeather(): Single<Location>? {
+    fun getCurrentLocationWeather(): Single<Location> {
         return weatherRepository.getWeatherFromLatLon(
             52.4901, 26.43743
         )

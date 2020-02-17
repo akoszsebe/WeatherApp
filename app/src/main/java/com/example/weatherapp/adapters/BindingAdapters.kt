@@ -17,8 +17,8 @@ fun bindIsGone(view: View, isGone: Boolean) {
 }
 
 @BindingAdapter("weatherImage")
-fun loadImage(view: ImageView, imageName: String?) {
-    Glide.with(view.context)
+fun ImageView.loadImage(imageName: String?) {
+    Glide.with(this)
         .load("http://openweathermap.org/img/wn/$imageName.png").apply(RequestOptions().circleCrop())
-        .into(view)
+        .into(this)
 }

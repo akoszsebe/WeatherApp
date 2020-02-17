@@ -15,12 +15,15 @@ import com.example.weatherapp.utils.InjectorUtils
 import com.example.weatherapp.viewmodels.CurrentLocationViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import io.reactivex.disposables.CompositeDisposable
 
 class CurrentLocationFragment : Fragment() {
 
     private lateinit var binding: FragmentCurrentLocationBinding
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    private val disposables: CompositeDisposable = CompositeDisposable()
 
     private val viewModel: CurrentLocationViewModel by viewModels {
         InjectorUtils.provideCurrentLocationViewModelFactory(this)
@@ -39,8 +42,8 @@ class CurrentLocationFragment : Fragment() {
     }
 
     private fun subscribeUi() {
-        viewModel.getCurrentLocationWeather()
-            ?.subscribe(
+        disposables.add(viewModel.getCurrentLocationWeather()
+            .subscribe(
                 { weather ->
                     binding.location = weather
                     obtieneLocalizacion()
@@ -48,7 +51,7 @@ class CurrentLocationFragment : Fragment() {
                 {
                     print(it)
                 }
-            )
+            ))
     }
 
     private fun obtieneLocalizacion(){
@@ -67,6 +70,8 @@ class CurrentLocationFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-
+        if (!disposables.isDisposed) {
+            disposables.dispose()
+        }
     }
 }
