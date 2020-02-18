@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.CompositeDisposable
 
-abstract class BaseFragment<T : ViewDataBinding>(var layoutResId: Int) : Fragment() {
+abstract class BaseFragment<B : ViewDataBinding, VM : ViewModel>(var layoutResId: Int) : Fragment() {
 
-    open lateinit var binding: T
+    protected lateinit var binding: B
+    protected lateinit var viewModel: VM
     protected val disposables: CompositeDisposable = CompositeDisposable()
 
     override fun onCreateView(

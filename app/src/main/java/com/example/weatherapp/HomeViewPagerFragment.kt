@@ -8,12 +8,17 @@ import com.example.weatherapp.adapters.LOCATIONS_PAGE_INDEX
 import com.example.weatherapp.adapters.WeatherPagerAdapter
 import com.example.weatherapp.base.BaseFragment
 import com.example.weatherapp.databinding.FragmentViewPagerBinding
+import com.example.weatherapp.utils.InjectorUtils
+import com.example.weatherapp.viewmodels.HomeViewPagerViewModel
+import com.example.weatherapp.viewmodels.LocationListViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 
-class HomeViewPagerFragment : BaseFragment<FragmentViewPagerBinding>(R.layout.fragment_view_pager) {
+class HomeViewPagerFragment : BaseFragment<FragmentViewPagerBinding,HomeViewPagerViewModel>(R.layout.fragment_view_pager) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = InjectorUtils.provideHomeViewPagerViewModelFactory().create(
+            HomeViewPagerViewModel::class.java)
         val tabLayout = binding.tabs
         val viewPager = binding.viewPager
 

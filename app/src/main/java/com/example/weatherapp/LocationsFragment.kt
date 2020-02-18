@@ -9,15 +9,12 @@ import com.example.weatherapp.databinding.FragmentLocationsBinding
 import com.example.weatherapp.utils.InjectorUtils
 import com.example.weatherapp.viewmodels.LocationListViewModel
 
-class LocationsFragment : BaseFragment<FragmentLocationsBinding>(R.layout.fragment_locations) {
-
-    private val viewModel: LocationListViewModel by viewModels {
-        InjectorUtils.provideLocationsListViewModelFactory(this)
-    }
+class LocationsFragment : BaseFragment<FragmentLocationsBinding,LocationListViewModel>(R.layout.fragment_locations) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val adapter = LocationAdapter()
+        viewModel = InjectorUtils.provideLocationsListViewModelFactory(this).create(LocationListViewModel::class.java)
         binding.locationsList.adapter = adapter
         subscribeUi(adapter)
     }
@@ -34,11 +31,6 @@ class LocationsFragment : BaseFragment<FragmentLocationsBinding>(R.layout.fragme
                 }
             )
         )
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
     }
 
 }

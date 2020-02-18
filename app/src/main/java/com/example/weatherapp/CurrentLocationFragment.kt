@@ -13,16 +13,13 @@ import com.example.weatherapp.viewmodels.CurrentLocationViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 
-class CurrentLocationFragment : BaseFragment<FragmentCurrentLocationBinding>(R.layout.fragment_current_location) {
+class CurrentLocationFragment : BaseFragment<FragmentCurrentLocationBinding,CurrentLocationViewModel>(R.layout.fragment_current_location) {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-    private val viewModel: CurrentLocationViewModel by viewModels {
-        InjectorUtils.provideCurrentLocationViewModelFactory(this)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel = InjectorUtils.provideCurrentLocationViewModelFactory(this).create(CurrentLocationViewModel::class.java)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.context!!)
         subscribeUi()
     }
