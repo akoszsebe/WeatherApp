@@ -42,6 +42,9 @@ object InjectorUtils {
         return CurrentLocationViewModelFactory(repository)
     }
 
+    fun provideConnectionHelper(context: Context): ConnectionHelper =
+        ConnectionHelper.getInstance(context.applicationContext)
+
     private fun provideHttpLogger(): OkHttpClient {
         val interceptor = HttpLoggingInterceptor()
         interceptor.apply { interceptor.level = HttpLoggingInterceptor.Level.BODY }
@@ -58,9 +61,6 @@ object InjectorUtils {
 
     private fun provideLocationWeatherDao(context: Context): LocationWeatherDao =
         AppDatabase.getInstance(context.applicationContext).locationWeatherDao()
-
-    private fun provideConnectionHelper(context: Context): ConnectionHelper =
-        ConnectionHelper(context.applicationContext)
 
     private fun provideWeatherRepository(
         retrofit: Retrofit,

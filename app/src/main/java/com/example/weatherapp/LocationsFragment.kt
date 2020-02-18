@@ -33,6 +33,7 @@ class LocationsFragment : BaseFragment<FragmentLocationsBinding,LocationListView
                 },
                 {
                     binding.locationsListRefresh.isRefreshing = false
+                    showError(it.message!!)
                 }
             )
         )

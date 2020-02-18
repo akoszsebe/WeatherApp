@@ -1,6 +1,6 @@
 package com.example.weatherapp.data.repository
 
-import com.example.weatherapp.data.model.Location
+import com.example.weatherapp.data.model.LocationWithWeather
 import com.example.weatherapp.data.persistance.dao.LocationWeatherDao
 import com.example.weatherapp.networking.api.WeatherApiService
 import com.example.weatherapp.utils.ConnectionHelper
@@ -13,14 +13,14 @@ class WeatherRepository(
     private val connectionHelper: ConnectionHelper
 ) {
 
-    fun getWeatherFromLatLon(lat: Double, lon: Double): Single<Location> {
-        return Single.create<Location> { emitter: SingleEmitter<Location> ->
+    fun getWeatherFromLatLon(lat: Double, lon: Double): Single<LocationWithWeather> {
+        return Single.create<LocationWithWeather> { emitter: SingleEmitter<LocationWithWeather> ->
             loadWeatherLatLonFromNetwork(lat, lon, emitter)
         }
     }
 
-    fun getWeatherForLocations(ids: List<Long>): Single<List<Location>> {
-        return Single.create<List<Location>> { emitter: SingleEmitter<List<Location>> ->
+    fun getWeatherForLocations(ids: List<Long>): Single<List<LocationWithWeather>> {
+        return Single.create<List<LocationWithWeather>> { emitter: SingleEmitter<List<LocationWithWeather>> ->
             if(connectionHelper.isOnline()) {
                 loadWeatherForLocationsFromNetwork(ids, emitter)
             } else {
@@ -32,7 +32,7 @@ class WeatherRepository(
     private fun loadWeatherLatLonFromNetwork(
         lat: Double,
         lon: Double,
-        emitter: SingleEmitter<Location>
+        emitter: SingleEmitter<LocationWithWeather>
     ) {
         try {
             val weather = weatherApiService.getWeatherForLatLon(lat, lon).execute().body()
@@ -50,13 +50,15 @@ class WeatherRepository(
 
     private fun loadWeatherForLocationsFromNetwork(
         ids: List<Long>,
-        emitter: SingleEmitter<List<Location>>
+        emitter: SingleEmitter<List<LocationWithWeather>>
     ) {
         try {
             val weathers =
                 weatherApiService.getWeatherForLocations(ids.joinToString(",")).execute().body()
             if (weathers != null) {
-                locationWeatherDao.insertAll(weathers.list)
+                val locationToSave =
+                locationWeatherDao.insertWeatherForLocations(weathers.list)
+                //insertAll(weathers.list)
                 emitter.onSuccess(weathers.list)
             } else {
                 emitter.onError(Exception("No data received"))
@@ -66,7 +68,7 @@ class WeatherRepository(
         }
     }
 
-    private fun loadWeatherForLocationsFromDb(emitter: SingleEmitter<List<Location>>) {
+    private fun loadWeatherForLocationsFromDb(emitter: SingleEmitter<List<LocationWithWeather>>) {
         val locations = locationWeatherDao.getAllLocation()
         if (!locations.isEmpty()) {
             emitter.onSuccess(locations)

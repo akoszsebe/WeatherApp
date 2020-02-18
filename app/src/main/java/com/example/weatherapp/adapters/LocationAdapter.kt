@@ -8,13 +8,17 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.HomeViewPagerFragmentDirections
-import com.example.weatherapp.data.model.Location
+import com.example.weatherapp.data.model.LocationWithWeather
 import com.example.weatherapp.databinding.ListItemWeatherLocationsBinding
 
-class LocationAdapter : ListAdapter<Location, RecyclerView.ViewHolder>(LocationDiffCallback()) {
+class LocationAdapter :
+    ListAdapter<LocationWithWeather, RecyclerView.ViewHolder>(LocationDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return LocationViewHolder(ListItemWeatherLocationsBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false))
+        return LocationViewHolder(
+            ListItemWeatherLocationsBinding.inflate(
+                LayoutInflater.from(parent.context), parent, false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -34,7 +38,7 @@ class LocationAdapter : ListAdapter<Location, RecyclerView.ViewHolder>(LocationD
         }
 
         private fun navigateToLocation(
-            location: Location,
+            location: LocationWithWeather,
             view: View
         ) {
             val direction =
@@ -44,7 +48,7 @@ class LocationAdapter : ListAdapter<Location, RecyclerView.ViewHolder>(LocationD
             view.findNavController().navigate(direction)
         }
 
-        fun bind(item: Location) {
+        fun bind(item: LocationWithWeather) {
             binding.apply {
                 location = item
                 executePendingBindings()
@@ -53,13 +57,19 @@ class LocationAdapter : ListAdapter<Location, RecyclerView.ViewHolder>(LocationD
     }
 }
 
-private class LocationDiffCallback : DiffUtil.ItemCallback<Location>() {
+private class LocationDiffCallback : DiffUtil.ItemCallback<LocationWithWeather>() {
 
-    override fun areItemsTheSame(oldItem: Location, newItem: Location): Boolean {
+    override fun areItemsTheSame(
+        oldItem: LocationWithWeather,
+        newItem: LocationWithWeather
+    ): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: Location, newItem: Location): Boolean {
+    override fun areContentsTheSame(
+        oldItem: LocationWithWeather,
+        newItem: LocationWithWeather
+    ): Boolean {
         return oldItem == newItem
     }
 }

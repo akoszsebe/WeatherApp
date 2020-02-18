@@ -1,7 +1,7 @@
 package com.example.weatherapp.viewmodels
 
 import androidx.lifecycle.ViewModel
-import com.example.weatherapp.data.model.Location
+import com.example.weatherapp.data.model.LocationWithWeather
 import com.example.weatherapp.data.repository.WeatherRepository
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -11,7 +11,7 @@ class CurrentLocationViewModel internal constructor(
     private val weatherRepository: WeatherRepository
 ) : ViewModel() {
 
-    fun getCurrentLocationWeather(): Single<Location> {
+    fun getCurrentLocationWeather(): Single<LocationWithWeather> {
         return weatherRepository.getWeatherFromLatLon(
             52.4901, 26.43743
         )

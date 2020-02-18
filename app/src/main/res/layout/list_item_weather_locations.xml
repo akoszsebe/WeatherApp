@@ -9,7 +9,7 @@
             type="android.view.View.OnClickListener"/>
         <variable
             name="location"
-            type="com.example.weatherapp.data.model.Location"/>
+            type="com.example.weatherapp.data.model.LocationWithWeather"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
