@@ -2,7 +2,6 @@ package com.example.weatherapp
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
 import com.example.weatherapp.adapters.LocationAdapter
 import com.example.weatherapp.base.BaseFragment
 import com.example.weatherapp.databinding.FragmentLocationsBinding
@@ -11,11 +10,16 @@ import com.example.weatherapp.viewmodels.LocationListViewModel
 
 class LocationsFragment : BaseFragment<FragmentLocationsBinding,LocationListViewModel>(R.layout.fragment_locations) {
 
+    private lateinit var adapter: LocationAdapter
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter = LocationAdapter()
+        adapter = LocationAdapter()
         viewModel = InjectorUtils.provideLocationsListViewModelFactory(this).create(LocationListViewModel::class.java)
         binding.locationsList.adapter = adapter
+        binding.locationsListRefresh.setOnRefreshListener {
+            subscribeUi(adapter)
+        }
         subscribeUi(adapter)
     }
 
@@ -25,9 +29,10 @@ class LocationsFragment : BaseFragment<FragmentLocationsBinding,LocationListView
                 { weather ->
                     adapter.submitList(weather)
                     binding.hasLocations = true
+                    binding.locationsListRefresh.isRefreshing = false
                 },
                 {
-                    print(it)
+                    binding.locationsListRefresh.isRefreshing = false
                 }
             )
         )

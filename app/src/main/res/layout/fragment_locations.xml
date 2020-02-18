@@ -14,15 +14,23 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/locations_list"
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/locations_list_refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false"
             android:layout_marginTop="@dimen/margin_normal"
-            app:isGone="@{!hasLocations}"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/list_item_weather_locations"/>
+            android:clipToPadding="false">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/locations_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                app:isGone="@{!hasLocations}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/list_item_weather_locations" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

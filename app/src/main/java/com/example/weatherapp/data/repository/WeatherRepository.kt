@@ -21,19 +21,13 @@ class WeatherRepository(
 
     fun getWeatherForLocations(ids: List<Long>): Single<List<Location>> {
         return Single.create<List<Location>> { emitter: SingleEmitter<List<Location>> ->
-            loadWeatherForLocationsFromNetwork(ids, emitter)
+            if(connectionHelper.isOnline()) {
+                loadWeatherForLocationsFromNetwork(ids, emitter)
+            } else {
+                loadWeatherForLocationsFromDb(emitter)
+            }
         }
     }
-
-//    private fun shouldUpdate(page: Int, forced: Boolean) = when {
-//        forced -> true
-//        !connectionHelper.isOnline() -> false
-//        else -> {
-//            val lastUpdate = preferencesHelper.loadLong(LAST_UPDATE_KEY + page)
-//            val currentTime = calendarWrapper.getCurrentTimeInMillis()
-//            lastUpdate + Constants.REFRESH_LIMIT < currentTime
-//        }
-//    }
 
     private fun loadWeatherLatLonFromNetwork(
         lat: Double,
@@ -59,12 +53,11 @@ class WeatherRepository(
         emitter: SingleEmitter<List<Location>>
     ) {
         try {
-            val weather =
+            val weathers =
                 weatherApiService.getWeatherForLocations(ids.joinToString(",")).execute().body()
-            if (weather != null) {
-//                userDao.insertAll(users.items)
-//                val currentTime = calendarWrapper.getCurrentTimeInMillis()
-                emitter.onSuccess(weather.list)
+            if (weathers != null) {
+                locationWeatherDao.insertAll(weathers.list)
+                emitter.onSuccess(weathers.list)
             } else {
                 emitter.onError(Exception("No data received"))
             }
@@ -73,13 +66,13 @@ class WeatherRepository(
         }
     }
 
+    private fun loadWeatherForLocationsFromDb(emitter: SingleEmitter<List<Location>>) {
+        val locations = locationWeatherDao.getAllLocation()
+        if (!locations.isEmpty()) {
+            emitter.onSuccess(locations)
+        } else {
+            emitter.onError(Exception("Device is offline"))
+        }
+    }
 
-//    private fun loadOfflineUsers(page: Int, emitter: SingleEmitter<UserListModel>) {
-//        val users = userDao.getUsers(page)
-//        if (!users.isEmpty()) {
-//            emitter.onSuccess(UserListModel(users))
-//        } else {
-//            emitter.onError(Exception("Device is offline"))
-//        }
-//    }
 }

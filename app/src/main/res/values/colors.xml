@@ -9,4 +9,5 @@
     <color name="weather_gray_900">#263238</color>
     <color name="weather_white">#deffffff</color>
     <color name="weather_indigo_500">#ab47bc</color>
+    <color name="weather_red">#ffcdd2</color>
 </resources>
