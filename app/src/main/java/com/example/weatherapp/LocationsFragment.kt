@@ -24,6 +24,7 @@ class LocationsFragment : BaseFragment<FragmentLocationsBinding,LocationListView
     }
 
     private fun subscribeUi(adapter: LocationAdapter) {
+        binding.locationsListRefresh.isRefreshing = true
         disposables.add(viewModel.getFavoriteLocationsWeather()
             .subscribe(
                 { weather ->
