@@ -14,21 +14,35 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp">
+        android:layout_height="86dp">
 
         <TextView
             android:id="@+id/plant_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_small"
             android:gravity="center_horizontal"
             android:text="@{String.format(@string/temptemplate,location.main.temp-272.15,location.weather[0].description)}"
             android:textColor="@color/weather_gray_50"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-            app:layout_constraintBottom_toTopOf="@+id/textView"
+            app:layout_constraintBottom_toTopOf="@+id/plant_name1"
             app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintTop_toTopOf="parent"
+            tools:text="30 C, szel minden" />
+
+        <TextView
+            android:id="@+id/plant_name1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_small"
+            android:gravity="center_horizontal"
+            android:text="@{String.format(@string/filslike,location.main.feelsLike-272.15)}"
+            android:textColor="@color/weather_gray_200"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+            app:layout_constraintTop_toBottomOf="@+id/plant_name"
+            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintBottom_toTopOf="@+id/textView"
             tools:text="30 C, szel minden" />
 
         <ImageView
@@ -46,7 +60,8 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/margin_small"
             android:text="@{location.name}"
             android:textColor="@color/weather_gray_200"
             app:layout_constraintBottom_toTopOf="@+id/dividerView"

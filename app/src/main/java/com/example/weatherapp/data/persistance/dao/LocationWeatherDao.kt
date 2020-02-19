@@ -23,6 +23,11 @@ abstract class LocationWeatherDao {
         _insertWeatherList(locationWithWeather.weather)
     }
 
+    fun deleteAllData(){
+        deleteWeatherData()
+        deleteLocationData()
+    }
+
     @Transaction
     @Query("SELECT * FROM location")
     abstract fun getAllLocation(): List<LocationWithWeather>
@@ -33,5 +38,9 @@ abstract class LocationWeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun _insertWeatherList(weather: List<Weather>)
 
+    @Query("DELETE FROM location")
+    abstract fun deleteLocationData()
 
+    @Query("DELETE FROM weather")
+    abstract fun deleteWeatherData()
 }

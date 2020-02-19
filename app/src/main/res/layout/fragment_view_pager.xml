@@ -75,19 +75,30 @@
                 android:id="@+id/tabs"
                 style="@style/Widget.MaterialComponents.TabLayout.Colored"
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:layout_marginStart="16dp"
-                android:background="@drawable/tab_layout_background"
+                android:layout_height="42dp"
+                android:layout_marginStart="8dp"
                 app:tabMode="scrollable"
-                app:tabBackground="@drawable/tab_layout_selector"
-                app:tabSelectedTextColor="?attr/colorPrimaryDark"
-                app:tabPaddingStart="16dp"
+                app:tabSelectedTextColor="@color/weather_white"
+                app:tabTextColor="@color/weather_gray_900"
                 app:tabPaddingEnd="16dp"
-                app:tabIndicatorHeight="0dp"
+                app:tabIndicatorGravity="bottom"
+                app:tabIndicatorFullWidth="false"
+                app:tabIndicatorColor="@color/weather_white"
+                app:tabIndicatorHeight="4dp"
+                app:tabIndicator="@drawable/shape_tab_indicator"
                 app:tabRippleColor="@null"
                 app:tabTextAppearance="@style/TabTextAppearance.Weather"/>
 
         </com.google.android.material.appbar.AppBarLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/margin_normal"
+            android:backgroundTint="?attr/colorAccent"
+            android:foreground="@drawable/ic_search_24"
+            android:foregroundGravity="center" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

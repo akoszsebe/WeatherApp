@@ -2,6 +2,7 @@ package com.example.weatherapp
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.widget.SearchView
 import com.example.weatherapp.adapters.LocationAdapter
 import com.example.weatherapp.base.BaseFragment
 import com.example.weatherapp.databinding.FragmentLocationsBinding
@@ -19,6 +20,12 @@ class LocationsFragment : BaseFragment<FragmentLocationsBinding,LocationListView
         binding.locationsList.adapter = adapter
         binding.locationsListRefresh.setOnRefreshListener {
             subscribeUi(adapter)
+        }
+        binding.searchView.isIconified = false
+        binding.searchView.setOnQueryTextListener(getSearchTextListener())
+        binding.searchView.setOnCloseListener {
+            binding.searchView.setQuery("",true)
+            return@setOnCloseListener true
         }
         subscribeUi(adapter)
     }
@@ -38,6 +45,21 @@ class LocationsFragment : BaseFragment<FragmentLocationsBinding,LocationListView
                 }
             )
         )
+    }
+
+    private fun getSearchTextListener(): SearchView.OnQueryTextListener {
+        return object : SearchView.OnQueryTextListener {
+            override fun onQueryTextChange(newText: String): Boolean {
+                disposables.add(viewModel.filter(newText).subscribe { filtered ->
+                    adapter.submitList(filtered)
+                })
+                return false
+            }
+
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return false
+            }
+        }
     }
 
 }

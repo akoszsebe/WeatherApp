@@ -56,9 +56,8 @@ class WeatherRepository(
             val weathers =
                 weatherApiService.getWeatherForLocations(ids.joinToString(",")).execute().body()
             if (weathers != null) {
-                val locationToSave =
+                locationWeatherDao.deleteAllData()
                 locationWeatherDao.insertWeatherForLocations(weathers.list)
-                //insertAll(weathers.list)
                 emitter.onSuccess(weathers.list)
             } else {
                 emitter.onError(Exception("No data received"))
