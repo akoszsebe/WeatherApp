@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
+<layout xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
         <variable
-            name="viewModel"
-            type="com.example.weatherapp.viewmodels.HomeViewPagerViewModel" />
+            name="clickHandler"
+            type="com.example.weatherapp.HomeViewPagerFragment" />
     </data>
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator_layout"
@@ -85,7 +85,8 @@
             app:backgroundTint="@color/weather_accent_color"
             android:foreground="@drawable/ic_search_24"
             android:foregroundGravity="center"
-            android:onClick="@{(v) -> viewModel.onFabClicked(v)}"/>
+            android:onClick="@{(v) -> clickHandler.onFabClicked(v)}"
+            tools:targetApi="m" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
