@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="clickHandler"
-            type="com.example.weatherapp.HomeViewPagerFragment" />
+            name="callback"
+            type="com.example.weatherapp.HomeViewPagerFragment.Callback" />
     </data>
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator_layout"
@@ -85,7 +85,7 @@
             app:backgroundTint="@color/weather_accent_color"
             android:foreground="@drawable/ic_search_24"
             android:foregroundGravity="center"
-            android:onClick="@{(v) -> clickHandler.onFabClicked(v)}"
+            android:onClick="@{(v) -> callback.onFabClicked(v)}"
             tools:targetApi="m" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

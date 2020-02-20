@@ -13,12 +13,14 @@ import com.example.weatherapp.viewmodels.HomeViewPagerViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayoutMediator
 
-class HomeViewPagerFragment : BaseFragment<FragmentViewPagerBinding,HomeViewPagerViewModel>(R.layout.fragment_view_pager) {
+class HomeViewPagerFragment :
+    BaseFragment<FragmentViewPagerBinding, HomeViewPagerViewModel>(R.layout.fragment_view_pager) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = InjectorUtils.provideHomeViewPagerViewModelFactory().create(
-            HomeViewPagerViewModel::class.java)
+            HomeViewPagerViewModel::class.java
+        )
         val tabLayout = binding.tabs
         val viewPager = binding.viewPager
 
@@ -28,9 +30,14 @@ class HomeViewPagerFragment : BaseFragment<FragmentViewPagerBinding,HomeViewPage
             tab.text = getTabTitle(position)
         }.attach()
 
-        setToolbar(binding.toolbar,false)
-        binding.fab.setOnClickListener {
-            onFabClicked(it)
+        setToolbar(binding.toolbar, false)
+        binding.callback = object : Callback {
+            override fun onFabClicked(view: View?) {
+                view as FloatingActionButton
+                val direction =
+                    HomeViewPagerFragmentDirections.actionViewPagerFragmentToLocationSearchFragment()
+                view.findNavController().navigate(direction)
+            }
         }
     }
 
@@ -42,10 +49,7 @@ class HomeViewPagerFragment : BaseFragment<FragmentViewPagerBinding,HomeViewPage
         }
     }
 
-    fun onFabClicked(view: View) {
-        view as FloatingActionButton
-        val direction =
-            HomeViewPagerFragmentDirections.actionViewPagerFragmentToLocationSearchFragment()
-        view.findNavController().navigate(direction)
+    interface Callback {
+        fun onFabClicked(view: View?)
     }
 }
