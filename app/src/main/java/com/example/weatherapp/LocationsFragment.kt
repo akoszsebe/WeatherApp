@@ -3,8 +3,6 @@ package com.example.weatherapp
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.SearchView
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.weatherapp.adapters.LocationAdapter
 import com.example.weatherapp.base.BaseFragment
 import com.example.weatherapp.databinding.FragmentLocationsBinding
@@ -38,7 +36,7 @@ class LocationsFragment : BaseFragment<FragmentLocationsBinding,LocationListView
                 },
                 {
                     binding.locationsListRefresh.isRefreshing = false
-                    showError(it.message!!)
+                    showErrorDialog(it.message!!)
                 }
             )
         )

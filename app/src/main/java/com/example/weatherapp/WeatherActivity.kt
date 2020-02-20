@@ -8,6 +8,7 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.Build
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,7 @@ import androidx.databinding.DataBindingUtil.setContentView
 import com.example.weatherapp.databinding.ActivityWeatherBinding
 import com.example.weatherapp.utils.ConnectionHelper
 import com.example.weatherapp.utils.InjectorUtils
+import com.example.weatherapp.utils.NetworkState
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -57,6 +59,13 @@ class WeatherActivity : AppCompatActivity() {
         networkStateChangedDispose?.dispose()
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            onBackPressed()
+        }
+        return true
+    }
+
     private fun naiveObserveNetworkStateChanged(
         connectivityManager: ConnectivityManager,
         connectionHelper: ConnectionHelper
@@ -74,7 +83,7 @@ class WeatherActivity : AppCompatActivity() {
             emitter.setCancellable {
                 connectivityManager.unregisterNetworkCallback(networkCallback)
             }
-            when(connectionHelper.isOnline()){
+            when (connectionHelper.isOnline()) {
                 true -> emitter.onNext(NetworkState.ONNLINE)
                 else -> emitter.onNext(NetworkState.OFFLINE)
             }
@@ -87,9 +96,4 @@ class WeatherActivity : AppCompatActivity() {
             }
         }
     }
-}
-
-enum class NetworkState {
-    ONNLINE,
-    OFFLINE
 }

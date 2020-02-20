@@ -18,5 +18,5 @@ data class MainInfo(
     @SerializedName("humidity")
     var humidity: Long?
 ) {
-    constructor() : this(0.0, 0.0, 0.0, 0.0, 0, 0)
+    constructor() : this(272.15, 272.15, 272.15, 272.15, 0, 0)
 }

@@ -7,16 +7,16 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class WeatherDetailsViewModel internal constructor(
-    private val weatherRepository: WeatherRepository,
-    private val locationId: Long
+class LocationSearchViewModel internal constructor(
+    private val weatherRepository: WeatherRepository
 ) : ViewModel() {
 
-    fun getFavoriteLocationsWeather(online: Boolean = true): Single<LocationWithWeather> {
-        return weatherRepository.getWeatherForLocation(
-            locationId, online
+    fun getFavoriteLocationsWeather(): Single<LocationWithWeather> {
+        return weatherRepository.getWeatherFromLatLon(
+            45.5, 34.6
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
     }
+
 }

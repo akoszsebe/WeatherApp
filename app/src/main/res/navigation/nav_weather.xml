@@ -15,6 +15,13 @@
             app:exitAnim="@anim/fragment_fade_exit"
             app:popEnterAnim="@anim/fragment_fade_enter"
             app:popExitAnim="@anim/fragment_fade_exit" />
+        <action
+            android:id="@+id/action_view_pager_fragment_to_location_search_fragment"
+            app:destination="@id/location_search_fragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit" />
     </fragment>
 
     <fragment
@@ -25,6 +32,13 @@
         <argument
             android:name="locationId"
             app:argType="long" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/location_search_fragment"
+        android:name="com.example.weatherapp.LocationSearchFragment"
+        android:label="@string/locations"
+        tools:layout="@layout/fragment_location_search">
     </fragment>
 
 </navigation>

@@ -6,10 +6,7 @@ import com.example.weatherapp.data.persistance.AppDatabase
 import com.example.weatherapp.data.persistance.dao.LocationWeatherDao
 import com.example.weatherapp.data.repository.WeatherRepository
 import com.example.weatherapp.networking.api.WeatherApiService
-import com.example.weatherapp.viewmodels.CurrentLocationViewModelFactory
-import com.example.weatherapp.viewmodels.HomeViewPagerViewModelFactory
-import com.example.weatherapp.viewmodels.LocationListViewModelFactory
-import com.example.weatherapp.viewmodels.WeatherDetailsViewModelFactory
+import com.example.weatherapp.viewmodels.*
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -20,13 +17,22 @@ import retrofit2.converter.gson.GsonConverterFactory
 private const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
 
 object InjectorUtils {
-    fun provideWeatherDetailsViewModelFactory(fragment: Fragment): WeatherDetailsViewModelFactory{
+    fun provideLocationSearchViewModelFactory(fragment: Fragment): LocationSearchViewModelFactory {
         val repository = provideWeatherRepository(
             provideRetrofit(),
             provideLocationWeatherDao(fragment.requireContext()),
             provideConnectionHelper(fragment.requireContext())
         )
-        return WeatherDetailsViewModelFactory(repository)
+        return LocationSearchViewModelFactory(repository)
+    }
+
+    fun provideWeatherDetailsViewModelFactory(fragment: Fragment, locationId: Long): WeatherDetailsViewModelFactory{
+        val repository = provideWeatherRepository(
+            provideRetrofit(),
+            provideLocationWeatherDao(fragment.requireContext()),
+            provideConnectionHelper(fragment.requireContext())
+        )
+        return WeatherDetailsViewModelFactory(repository,locationId)
     }
 
 

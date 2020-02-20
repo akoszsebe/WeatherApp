@@ -11,4 +11,5 @@
     <string name="search_hint">Search..</string>
     <string name="filslike">feels like %.0f °C</string>
     <string name="onlytemptemplate">%.0f °C</string>
+    <string name="date_format">dd MMMM,yyyy hh:mm:ss</string>
 </resources>

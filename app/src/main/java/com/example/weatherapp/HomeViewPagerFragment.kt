@@ -2,7 +2,6 @@ package com.example.weatherapp
 
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import com.example.weatherapp.adapters.CURRENT_LOCATION_PAGE_INDEX
 import com.example.weatherapp.adapters.LOCATIONS_PAGE_INDEX
 import com.example.weatherapp.adapters.WeatherPagerAdapter
@@ -10,7 +9,6 @@ import com.example.weatherapp.base.BaseFragment
 import com.example.weatherapp.databinding.FragmentViewPagerBinding
 import com.example.weatherapp.utils.InjectorUtils
 import com.example.weatherapp.viewmodels.HomeViewPagerViewModel
-import com.example.weatherapp.viewmodels.LocationListViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 
 class HomeViewPagerFragment : BaseFragment<FragmentViewPagerBinding,HomeViewPagerViewModel>(R.layout.fragment_view_pager) {
@@ -28,7 +26,10 @@ class HomeViewPagerFragment : BaseFragment<FragmentViewPagerBinding,HomeViewPage
             tab.text = getTabTitle(position)
         }.attach()
 
-        (activity as AppCompatActivity).setSupportActionBar(binding.toolbar)
+        setToolbar(binding.toolbar,false)
+//        binding.fab.setOnClickListener {
+//            onFabClicked(it)
+//        }
     }
 
     private fun getTabTitle(position: Int): String? {
@@ -38,4 +39,6 @@ class HomeViewPagerFragment : BaseFragment<FragmentViewPagerBinding,HomeViewPage
             else -> null
         }
     }
+
+
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="weather_black">#de000000</color>
+    <color name="weather_black">#000000</color>
     <color name="weather_gray_50">#eceff1</color>
     <color name="weather_gray_200">#b0bec5</color>
     <color name="weather_gray_300">#90a4ae</color>
@@ -8,6 +8,7 @@
     <color name="weather_gray_800">#37474f</color>
     <color name="weather_gray_900">#1b1b1b</color>
     <color name="weather_white">#deffffff</color>
-    <color name="weather_indigo_500">#ff8a50</color>
+    <color name="weather_white_50">#80ffffff</color>
+    <color name="weather_accent_color">#ff8a50</color>
     <color name="weather_red">#e57373</color>
 </resources>

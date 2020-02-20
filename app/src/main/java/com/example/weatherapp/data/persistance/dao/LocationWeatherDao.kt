@@ -34,6 +34,10 @@ abstract class LocationWeatherDao {
     @Query("SELECT * FROM location")
     abstract fun getAllLocation(): List<LocationWithWeather>
 
+    @Transaction
+    @Query("SELECT * FROM location WHERE locationId=:locationId")
+    abstract fun getLocationById(locationId : Long): LocationWithWeather
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun _insertLocation(locations: Location)
 

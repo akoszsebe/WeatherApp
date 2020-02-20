@@ -19,13 +19,43 @@ class WeatherRepository(
         }
     }
 
+    fun getWeatherForLocation(locationId: Long,online: Boolean = true): Single<LocationWithWeather> {
+        return Single.create<LocationWithWeather> { emitter: SingleEmitter<LocationWithWeather> ->
+            if (connectionHelper.isOnline() && online) {
+                loadWeatherLocationFromNetwork(locationId, emitter)
+            } else {
+                loadWeatherLocationFromDb(locationId, emitter)
+            }
+        }
+    }
+
     fun getWeatherForLocations(ids: List<Long>): Single<List<LocationWithWeather>> {
         return Single.create<List<LocationWithWeather>> { emitter: SingleEmitter<List<LocationWithWeather>> ->
-            if(connectionHelper.isOnline()) {
+            if (connectionHelper.isOnline()) {
                 loadWeatherForLocationsFromNetwork(ids, emitter)
             } else {
                 loadWeatherForLocationsFromDb(emitter)
             }
+        }
+    }
+
+    //online
+
+    private fun loadWeatherLocationFromNetwork(
+        locationId: Long,
+        emitter: SingleEmitter<LocationWithWeather>
+    ) {
+        try {
+            val weather = weatherApiService.getWeatherForLocation(locationId).execute().body()
+            if (weather != null) {
+//                userDao.insertAll(users.items)
+//                val currentTime = calendarWrapper.getCurrentTimeInMillis()
+                emitter.onSuccess(weather)
+            } else {
+                emitter.onError(Exception("No data received"))
+            }
+        } catch (exception: Exception) {
+            emitter.onError(exception)
         }
     }
 
@@ -67,6 +97,8 @@ class WeatherRepository(
         }
     }
 
+    //offline
+
     private fun loadWeatherForLocationsFromDb(emitter: SingleEmitter<List<LocationWithWeather>>) {
         val locations = locationWeatherDao.getAllLocation()
         if (!locations.isEmpty()) {
@@ -74,6 +106,11 @@ class WeatherRepository(
         } else {
             emitter.onError(Exception("Device is offline"))
         }
+    }
+
+    private fun loadWeatherLocationFromDb(locationId: Long, emitter: SingleEmitter<LocationWithWeather>) {
+        val location = locationWeatherDao.getLocationById(locationId)
+        emitter.onSuccess(location)
     }
 
 }
