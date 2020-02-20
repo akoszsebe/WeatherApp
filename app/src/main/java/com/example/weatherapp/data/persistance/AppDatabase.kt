@@ -6,13 +6,14 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.weatherapp.data.model.Location
+import com.example.weatherapp.data.model.LocationWeatherCrossRef
 import com.example.weatherapp.data.model.Weather
 import com.example.weatherapp.data.persistance.dao.LocationWeatherDao
 import com.example.weatherapp.data.persistance.typeconverter.ListStringTypeConverter
 
 private const val DATABASE_NAME = "db-name"
 
-@Database(entities = [(Location::class),(Weather::class)], version = 1, exportSchema = false)
+@Database(entities = [(Location::class),(Weather::class), (LocationWeatherCrossRef::class)], version = 1, exportSchema = false)
 @TypeConverters(
     ListStringTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {

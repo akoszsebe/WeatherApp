@@ -1,19 +1,19 @@
 package com.example.weatherapp.data.model
 
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.Relation
+import androidx.room.*
 import com.google.gson.annotations.SerializedName
 
 data class LocationWithWeather(
-    @SerializedName("id")
+    @SerializedName("id") @ColumnInfo(name = "locationId")
     var id: Long,
-    @SerializedName("weather")
-    @Relation(parentColumn = "id", entityColumn = "locationId")
+    @SerializedName("weather") @Relation(
+        parentColumn = "locationId",
+        entityColumn = "weatherId",
+        associateBy = Junction(LocationWeatherCrossRef::class)
+    )
     var weather: List<Weather>,
-    @SerializedName("main")
-    @Embedded var main: MainInfo,
+    @SerializedName("main") @Embedded
+    var main: MainInfo,
     @SerializedName("dt")
     var dt: Long,
     @SerializedName("timezone")
@@ -26,8 +26,10 @@ data class LocationWithWeather(
 
 @Entity
 data class Location(
-    @PrimaryKey var id: Long,
-    @Embedded var main: MainInfo, //@Embedded
+    @PrimaryKey @ColumnInfo(name = "locationId")
+    var id: Long,
+    @Embedded
+    var main: MainInfo,
     var dt: Long,
     var timezone: Long,
     var name: String
@@ -45,5 +47,11 @@ data class Location(
                 locationWithWeather.name
             )
 }
+
+@Entity(primaryKeys = ["locationId", "weatherId"])
+class LocationWeatherCrossRef(
+    var locationId: Long = 0,
+    var weatherId: Long = 0
+)
 
 

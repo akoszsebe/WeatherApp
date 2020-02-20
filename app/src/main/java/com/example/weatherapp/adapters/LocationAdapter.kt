@@ -43,7 +43,7 @@ class LocationAdapter :
         ) {
             val direction =
                 HomeViewPagerFragmentDirections.actionViewPagerFragmentToWeatherDetailFragment(
-                    location.id!!
+                    location.id
                 )
             view.findNavController().navigate(direction)
         }

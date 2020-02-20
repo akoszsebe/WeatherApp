@@ -2,6 +2,7 @@ package com.example.weatherapp.data.persistance.dao
 
 import androidx.room.*
 import com.example.weatherapp.data.model.Location
+import com.example.weatherapp.data.model.LocationWeatherCrossRef
 import com.example.weatherapp.data.model.LocationWithWeather
 import com.example.weatherapp.data.model.Weather
 
@@ -14,18 +15,19 @@ abstract class LocationWeatherDao {
         }
     }
 
-    fun insertWeatherForLocation(locationWithWeather: LocationWithWeather) {
+    fun deleteAllData() {
+        deleteLocationWeatherCrossRefData()
+        deleteWeatherData()
+        deleteLocationData()
+    }
+
+    private fun insertWeatherForLocation(locationWithWeather: LocationWithWeather) {
         val location = Location(locationWithWeather)
         for (weather in locationWithWeather.weather) {
-            weather.locationId = location.id
+            _insertLocationWeatherCrossRef(LocationWeatherCrossRef(location.id, weather.id))
         }
         _insertLocation(location)
         _insertWeatherList(locationWithWeather.weather)
-    }
-
-    fun deleteAllData(){
-        deleteWeatherData()
-        deleteLocationData()
     }
 
     @Transaction
@@ -36,10 +38,16 @@ abstract class LocationWeatherDao {
     abstract fun _insertLocation(locations: Location)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun _insertLocationWeatherCrossRef(locationWeatherCrossRef: LocationWeatherCrossRef)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun _insertWeatherList(weather: List<Weather>)
 
     @Query("DELETE FROM location")
     abstract fun deleteLocationData()
+
+    @Query("DELETE FROM locationweathercrossref")
+    abstract fun deleteLocationWeatherCrossRefData()
 
     @Query("DELETE FROM weather")
     abstract fun deleteWeatherData()
