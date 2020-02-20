@@ -10,9 +10,14 @@
         <variable
             name="location"
             type="com.example.weatherapp.data.model.LocationWithWeather"/>
+        <variable
+            name="hasDivider"
+            type="boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/itemView"
+        android:background="?android:attr/selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="86dp">
 
@@ -20,41 +25,57 @@
             android:id="@+id/plant_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginStart="@dimen/margin_normal"
             android:layout_marginTop="@dimen/margin_small"
             android:gravity="center_horizontal"
-            android:text="@{String.format(@string/temptemplate,location.main.temp-272.15,location.weather[0].description)}"
+            android:text="@{location.name}"
             android:textColor="@color/weather_gray_50"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             app:layout_constraintBottom_toTopOf="@+id/plant_name1"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="30 C, szel minden" />
+            tools:text="Cluj -Napoca" />
 
         <TextView
             android:id="@+id/plant_name1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginStart="@dimen/margin_normal"
             android:gravity="center_horizontal"
-            android:text="@{String.format(@string/filslike,location.main.feelsLike-272.15)}"
+            android:text="@{String.format(@string/temptemplate,location.weather[0].description)}"
             android:textColor="@color/weather_gray_200"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
             app:layout_constraintTop_toBottomOf="@+id/plant_name"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/textView"
             tools:text="30 C, szel minden" />
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="@dimen/margin_small"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/temp"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/tab_layout_background"
+            app:srcCompat="@drawable/tab_background_selected"
             app:weatherImage="@{location.weather[0].icon}" />
+
+        <TextView
+            android:id="@+id/temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/margin_normal"
+            android:gravity="center_horizontal"
+            android:text="@{String.format(@string/onlytemptemplate,location.main.temp-272.15)}"
+            android:textColor="@color/weather_gray_50"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="24 C" />
 
         <TextView
             android:id="@+id/textView"
@@ -62,14 +83,17 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_small"
             android:layout_marginBottom="@dimen/margin_small"
-            android:text="@{location.name}"
+            android:text="@{String.format(@string/filslike,location.main.feelsLike-272.15)}"
             android:textColor="@color/weather_gray_200"
-            app:layout_constraintBottom_toTopOf="@+id/dividerView"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/plant_name"
-            tools:text="Cluj-Napoca" />
+            tools:text="feels like ..." />
 
         <View
             android:id="@+id/dividerView"
+            app:isGone="@{!hasDivider}"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_normal"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@android:color/darker_gray"

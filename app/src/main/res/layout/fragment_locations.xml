@@ -13,17 +13,19 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchView"
             style="@style/SearchViewStyle.Weather"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:layout_gravity="end"
+            android:elevation="10dp"
             android:layout_marginStart="@dimen/margin_normal"
             android:layout_marginTop="@dimen/margin_small"
             android:layout_marginEnd="@dimen/margin_normal"
-            android:background="@drawable/tab_layout_background"
+            android:background="@drawable/rearch_bacgound"
             android:clickable="true"
             android:focusable="true"
             app:isGone="@{!hasLocations}" />
@@ -31,18 +33,27 @@
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/locations_list_refresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="50dp"
-            android:clipToPadding="false">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginTop="56dp"
+            android:layout_marginRight="@dimen/margin_small"
+            android:clipToPadding="true">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/locations_list"
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                app:isGone="@{!hasLocations}"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/list_item_weather_locations" />
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/locations_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/weather_list_background"
+                    android:nestedScrollingEnabled="false"
+                    app:isGone="@{!hasLocations}"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="4"
+                    tools:listitem="@layout/list_item_weather_locations" />
+            </androidx.core.widget.NestedScrollView>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <LinearLayout

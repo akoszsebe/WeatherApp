@@ -24,7 +24,7 @@
     <style name="Theme.Weather.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar"/>
 
     <style name="TextAppearance.Weather.Toolbar.Text" parent="TextAppearance.MaterialComponents.Headline5" >
-        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="android:textColor">@color/weather_gray_300</item>
     </style>
 
     <style name="TabTextAppearance.Weather" parent="TextAppearance.Design.Tab">

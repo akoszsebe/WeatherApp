@@ -23,14 +23,15 @@ class LocationAdapter :
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val plant = getItem(position)
-        (holder as LocationViewHolder).bind(plant)
+        val hasDivider = itemCount != position + 1
+        (holder as LocationViewHolder).bind(plant, hasDivider)
     }
 
     class LocationViewHolder(
         private val binding: ListItemWeatherLocationsBinding
     ) : RecyclerView.ViewHolder(binding.root) {
         init {
-            binding.setClickListener {
+            binding.itemView.setOnClickListener {
                 binding.location?.let { location ->
                     navigateToLocation(location, it)
                 }
@@ -42,15 +43,16 @@ class LocationAdapter :
             view: View
         ) {
             val direction =
-                HomeViewPagerFragmentDirections.actionViewPagerFragmentToWeatherDetailFragment(
+                HomeViewPagerFragmentDirections.actionViewPagerFragmentToLocationWeatherDetailFragment(
                     location.id
                 )
             view.findNavController().navigate(direction)
         }
 
-        fun bind(item: LocationWithWeather) {
+        fun bind(item: LocationWithWeather, hasDivider: Boolean) {
             binding.apply {
                 location = item
+                this.hasDivider = hasDivider
                 executePendingBindings()
             }
         }

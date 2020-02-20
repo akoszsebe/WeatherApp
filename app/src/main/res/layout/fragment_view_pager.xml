@@ -79,7 +79,7 @@
                 android:layout_marginStart="8dp"
                 app:tabMode="scrollable"
                 app:tabSelectedTextColor="@color/weather_white"
-                app:tabTextColor="@color/weather_gray_900"
+                app:tabTextColor="@color/weather_gray_300"
                 app:tabPaddingEnd="16dp"
                 app:tabIndicatorGravity="bottom"
                 app:tabIndicatorFullWidth="false"
@@ -96,7 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/margin_normal"
-            android:backgroundTint="?attr/colorAccent"
+            app:backgroundTint="@color/weather_indigo_500"
             android:foreground="@drawable/ic_search_24"
             android:foregroundGravity="center" />
 

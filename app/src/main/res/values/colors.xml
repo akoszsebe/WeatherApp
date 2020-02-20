@@ -6,8 +6,8 @@
     <color name="weather_gray_300">#90a4ae</color>
     <color name="weather_gray_500">#607d8b</color>
     <color name="weather_gray_800">#37474f</color>
-    <color name="weather_gray_900">#263238</color>
+    <color name="weather_gray_900">#1b1b1b</color>
     <color name="weather_white">#deffffff</color>
-    <color name="weather_indigo_500">#ab47bc</color>
+    <color name="weather_indigo_500">#ff8a50</color>
     <color name="weather_red">#e57373</color>
 </resources>

@@ -8,22 +8,20 @@
         android:id="@+id/view_pager_fragment"
         android:name="com.example.weatherapp.HomeViewPagerFragment"
         tools:layout="@layout/fragment_view_pager">
-
         <action
-                android:id="@+id/action_view_pager_fragment_to_weather_detail_fragment"
-                app:destination="@id/location_weather_detail_fragment"
-                app:enterAnim="@anim/slide_in_right"
-                app:exitAnim="@anim/slide_out_left"
-                app:popEnterAnim="@anim/slide_in_left"
-                app:popExitAnim="@anim/slide_out_right" />
-
+            android:id="@+id/action_view_pager_fragment_to_location_weather_detail_fragment"
+            app:destination="@id/location_weather_detail_fragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit" />
     </fragment>
 
     <fragment
         android:id="@+id/location_weather_detail_fragment"
-        android:name="com.example.weatherapp.LocationsFragment"
+        android:name="com.example.weatherapp.WeatherDetailFragment"
         android:label="@string/locations"
-        tools:layout="@layout/fragment_locations">
+        tools:layout="@layout/fragment_weather_detailes">
         <argument
             android:name="locationId"
             app:argType="long" />

@@ -11,7 +11,7 @@ import io.reactivex.schedulers.Schedulers
 class LocationListViewModel internal constructor(
     private val weatherRepository: WeatherRepository
 ) : ViewModel() {
-    lateinit var list: List<LocationWithWeather>
+    var list: List<LocationWithWeather> = listOf()
 
     fun getFavoriteLocationsWeather(): Single<List<LocationWithWeather>> {
         return weatherRepository.getWeatherForLocations(
