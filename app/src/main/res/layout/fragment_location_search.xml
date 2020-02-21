@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -9,11 +10,52 @@
 
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/coordinator_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:fitsSystemWindows="true">
 
-    </LinearLayout>
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:gravity="start|center"
+                android:text="@string/search_fragment_title"
+                android:textAppearance="?attr/textAppearanceHeadline5"
+                android:textColor="@color/weather_gray_50" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+        <EditText
+            android:id="@+id/searh_editext"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:hint="@string/search_hint"
+            android:paddingStart="@dimen/margin_normal"
+            android:paddingEnd="@dimen/margin_normal"
+            android:layout_margin="@dimen/margin_normal"
+            android:background="@drawable/rearch_bacgound"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"/>
+        <ListView
+            android:id="@+id/listview_results"
+            android:layout_width="match_parent"
+            android:layout_margin="@dimen/margin_normal"
+            android:background="@drawable/rearch_bacgound"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/searh_editext"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
