@@ -3,6 +3,8 @@ package com.example.weatherapp
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.core.widget.addTextChangedListener
@@ -36,32 +38,45 @@ class LocationSearchFragment :
         binding.listviewResults.adapter = adapter
         geocoder = Geocoder(this.requireContext(), Locale.ENGLISH)
         binding.searhEditext.addTextChangedListener {
-            if (!it.isNullOrEmpty()) {
-                disposables.add(viewModel.getFromLocationName(
-                    geocoder,
-                    it.toString()
-                ).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread()).subscribe { locationList ->
-                        binding.hasLocations = false
-                        viewModel.locationNameList.clear();
-                        if (!locationList.isNullOrEmpty()) {
-                            viewModel.locationList = locationList
-                            for (i in locationList) {
-                                if (i.featureName == null) {
-                                    viewModel.locationNameList.add("unknown")
-                                } else {
-                                    viewModel.locationNameList.add(i.featureName)
-                                    binding.hasLocations = true
-                                }
-                            }
-                        }
-                        adapter.notifyDataSetChanged()
-                    })
-            } else {
-                viewModel.locationNameList.clear()
-                adapter.notifyDataSetChanged()
+            textChanged(it)
+        }
+
+        binding.listviewResults.setOnItemClickListener { parent, view, position, id ->
+            binding.searhEditext.addTextChangedListener(null)
+            binding.searhEditext.setText(viewModel.locationNameList.get(position))
+            binding.hasLocations = false
+            binding.searhEditext.addTextChangedListener {
+                textChanged(it)
             }
         }
 
+    }
+
+    private fun textChanged(it: Editable?) {
+        if (!it.isNullOrEmpty()) {
+            disposables.add(viewModel.getFromLocationName(
+                geocoder,
+                it.toString()
+            ).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe { locationList ->
+                    binding.hasLocations = false
+                    viewModel.locationNameList.clear();
+                    if (!locationList.isNullOrEmpty()) {
+                        viewModel.locationList = locationList
+                        for (i in locationList) {
+                            if (i.featureName == null) {
+                                viewModel.locationNameList.add("unknown")
+                            } else {
+                                viewModel.locationNameList.add(i.featureName)
+                                binding.hasLocations = true
+                            }
+                        }
+                    }
+                    adapter.notifyDataSetChanged()
+                })
+        } else {
+            viewModel.locationNameList.clear()
+            adapter.notifyDataSetChanged()
+        }
     }
 }
