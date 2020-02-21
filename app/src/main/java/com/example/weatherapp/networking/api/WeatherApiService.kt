@@ -8,6 +8,11 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface WeatherApiService {
+    @GET("weather")
+    fun getWeatherForLocationByName(
+        @Query("q",encoded = true) locationName : String,
+        @Query("appid") appId: String = BuildConfig.OPENWEATHERMAP_KEY
+    ): Call<LocationWithWeather>
 
     @GET("weather")
     fun getWeatherForLocation(

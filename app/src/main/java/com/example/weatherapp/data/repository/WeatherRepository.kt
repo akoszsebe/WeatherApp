@@ -13,6 +13,12 @@ class WeatherRepository(
     private val connectionHelper: ConnectionHelper
 ) {
 
+    fun getWeatherFromLocationName(locationName: String): Single<LocationWithWeather> {
+        return Single.create<LocationWithWeather> { emitter: SingleEmitter<LocationWithWeather> ->
+            loadWeatherByLocationNameFromNetwork(locationName, emitter)
+        }
+    }
+
     fun getWeatherFromLatLon(lat: Double, lon: Double): Single<LocationWithWeather> {
         return Single.create<LocationWithWeather> { emitter: SingleEmitter<LocationWithWeather> ->
             loadWeatherLatLonFromNetwork(lat, lon, emitter)
@@ -40,6 +46,23 @@ class WeatherRepository(
     }
 
     //online
+    private fun loadWeatherByLocationNameFromNetwork(
+        locationName: String,
+        emitter: SingleEmitter<LocationWithWeather>
+    ) {
+        try {
+            val weather = weatherApiService.getWeatherForLocationByName(locationName).execute().body()
+            if (weather != null) {
+                locationWeatherDao.insertWeatherForLocation(weather)
+                emitter.onSuccess(weather)
+            } else {
+                emitter.onError(Exception("No data received"))
+            }
+        } catch (exception: Exception) {
+            emitter.onError(exception)
+        }
+    }
+
 
     private fun loadWeatherLocationFromNetwork(
         locationId: Long,

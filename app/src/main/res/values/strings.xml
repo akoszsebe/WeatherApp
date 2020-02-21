@@ -14,4 +14,7 @@
     <string name="date_format">hh:mm:ss dd MMMM, yyyy</string>
     <string name="search_fragment_title">Search location</string>
     <string name="please_select_one">Please select on item from  the list below</string>
+    <string name="show_weather">show weather</string>
+    <string name="save_favorite">save as favorite</string>
+    <string name="go_to_details">show more details</string>
 </resources>

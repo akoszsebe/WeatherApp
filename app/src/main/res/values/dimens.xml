@@ -29,5 +29,7 @@
 
     <!-- minimum height of plant detail page so that the collapsing toolbar can be shown on every page -->
     <dimen name="plant_description_min_height">555dp</dimen>
+    <dimen name="margin_large">30dp</dimen>
+    <dimen name="margin_extra_large">60dp</dimen>
 
 </resources>

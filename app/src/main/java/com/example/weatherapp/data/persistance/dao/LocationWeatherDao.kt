@@ -21,7 +21,7 @@ abstract class LocationWeatherDao {
         deleteLocationData()
     }
 
-    private fun insertWeatherForLocation(locationWithWeather: LocationWithWeather) {
+    fun insertWeatherForLocation(locationWithWeather: LocationWithWeather) {
         val location = Location(locationWithWeather)
         for (weather in locationWithWeather.weather) {
             _insertLocationWeatherCrossRef(LocationWeatherCrossRef(location.id, weather.id))

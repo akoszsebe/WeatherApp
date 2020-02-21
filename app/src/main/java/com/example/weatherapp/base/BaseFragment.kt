@@ -1,7 +1,9 @@
 package com.example.weatherapp.base
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +47,22 @@ abstract class BaseFragment<B : ViewDataBinding, VM : ViewModel>(private var lay
             .setMessage(message)
             .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
             .show()
+    }
+
+    fun showDialogNoGps() {
+        val builder = AlertDialog.Builder(this.requireContext())
+        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
+            .setCancelable(false)
+            .setPositiveButton("Yes") { dialog, id ->
+                startActivityForResult(
+                    Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                    , 11)
+            }
+            .setNegativeButton("No") { dialog, id ->
+                dialog.cancel()
+            }
+        val alert: AlertDialog  = builder.create()
+        alert.show()
     }
 
     fun setToolbar(toolbar: Toolbar?, showHomeButton : Boolean) {

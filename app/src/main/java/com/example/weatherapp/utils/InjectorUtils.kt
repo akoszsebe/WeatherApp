@@ -18,12 +18,13 @@ private const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
 
 object InjectorUtils {
     fun provideLocationSearchViewModelFactory(fragment: Fragment): LocationSearchViewModelFactory {
+        val connectionHelper = provideConnectionHelper(fragment.requireContext())
         val repository = provideWeatherRepository(
             provideRetrofit(),
             provideLocationWeatherDao(fragment.requireContext()),
-            provideConnectionHelper(fragment.requireContext())
+            connectionHelper
         )
-        return LocationSearchViewModelFactory(repository)
+        return LocationSearchViewModelFactory(repository, connectionHelper)
     }
 
     fun provideWeatherDetailsViewModelFactory(fragment: Fragment, locationId: Long): WeatherDetailsViewModelFactory{

@@ -39,6 +39,13 @@
         android:name="com.example.weatherapp.LocationSearchFragment"
         android:label="@string/locations"
         tools:layout="@layout/fragment_location_search">
+        <action
+            android:id="@+id/action_location_search_fragment_to_location_detail_fragment"
+            app:destination="@id/location_weather_detail_fragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_fade_enter"
+            app:popExitAnim="@anim/fragment_fade_exit" />
     </fragment>
 
 </navigation>

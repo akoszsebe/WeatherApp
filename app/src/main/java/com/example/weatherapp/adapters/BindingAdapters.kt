@@ -1,13 +1,18 @@
 package com.example.weatherapp.adapters
 
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import com.bumptech.glide.GenericTransitionOptions
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
+import com.bumptech.glide.request.transition.Transition
+import com.bumptech.glide.request.transition.TransitionFactory
 import com.example.weatherapp.R
 import java.text.SimpleDateFormat
 import java.util.*
@@ -30,7 +35,8 @@ object BindingAdapters {
         Glide.with(this)
             .load("https://openweathermap.org/img/wn/$imageName@2x.png")
             .apply(RequestOptions().circleCrop())
-            .transition(GenericTransitionOptions.with(R.anim.fragment_fade_enter))
+            .transition(DrawableTransitionOptions.with(DrawableAlwaysCrossFadeFactory()))
+            .error(R.drawable.ic_warning)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(this)
     }
@@ -44,4 +50,12 @@ object BindingAdapters {
         this.text =  formatter.format(calendar.getTime())
     }
 
+}
+
+
+class DrawableAlwaysCrossFadeFactory : TransitionFactory<Drawable> {
+    private val resourceTransition: DrawableCrossFadeTransition = DrawableCrossFadeTransition(300, true) //customize to your own needs or apply a builder pattern
+    override fun build(dataSource: DataSource?, isFirstResource: Boolean): Transition<Drawable> {
+        return resourceTransition
+    }
 }

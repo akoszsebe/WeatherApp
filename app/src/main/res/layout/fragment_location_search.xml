@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
-            name="hasLocations"
+            name="hasLocationSuggestions"
             type="boolean" />
 
+        <variable
+            name="hasWeather"
+            type="boolean" />
+
+        <variable
+            name="location"
+            type="com.example.weatherapp.data.model.LocationWithWeather" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,9 +26,9 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:theme="@style/Theme.Weather.AppBarOverlay"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -39,38 +47,166 @@
             android:id="@+id/searh_editext"
             android:layout_width="match_parent"
             android:layout_height="42dp"
+            android:layout_margin="@dimen/margin_normal"
+            android:background="@drawable/rearch_bacgound"
             android:hint="@string/search_hint"
             android:paddingStart="@dimen/margin_normal"
             android:paddingEnd="@dimen/margin_normal"
-            android:layout_margin="@dimen/margin_normal"
-            android:background="@drawable/rearch_bacgound"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar" />
-        <TextView
-            android:id="@+id/pleaseselect"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:gravity="start|center"
-            android:paddingStart="@dimen/margin_normal"
-            android:paddingEnd="@dimen/margin_normal"
-            android:text="@string/please_select_one"
-            android:textAppearance="?attr/textAppearanceBody1"
-            android:textColor="@color/weather_gray_200"
-            app:layout_constraintTop_toBottomOf="@id/searh_editext"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:isGone="@{!hasLocations}"/>
+
+        <ImageButton
+            android:id="@+id/button_gps"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="@dimen/margin_small"
+            android:background="@color/weather_gray_900"
+            android:src="@drawable/ic_gps"
+            app:layout_constraintBottom_toBottomOf="@id/searh_editext"
+            app:layout_constraintEnd_toEndOf="@id/searh_editext"
+            app:layout_constraintTop_toTopOf="@id/searh_editext" />
+
         <ListView
             android:id="@+id/listview_results"
             android:layout_width="match_parent"
-            android:layout_margin="@dimen/margin_normal"
-            android:background="@drawable/result_backgournd"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/pleaseselect"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_normal"
+            android:background="@drawable/result_backgournd"
+            app:isGone="@{!hasLocationSuggestions}"
             app:layout_constraintEnd_toEndOf="parent"
-            app:isGone="@{!hasLocations}"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searh_editext" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/show_weather_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/header_margin"
+            android:text="@string/show_weather"
+            app:backgroundTint="@color/weather_gray_900"
+            app:cornerRadius="@dimen/button_corner_radius"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/listview_results" />
+
+        <LinearLayout
+            android:id="@+id/scaleView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_extra_large"
+            android:orientation="horizontal"
+            app:isGone="@{!hasWeather}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/show_weather_button">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:layout_gravity="center|center_horizontal"
+                android:gravity="center"
+                android:text="@{String.format(@string/onlytemptemplate,location.main.temp-272.15)}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
+                android:textColor="@color/weather_gray_50"
+                tools:text="3 *C" />
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center|center_horizontal"
+                android:layout_marginStart="@dimen/margin_small"
+                android:elevation="1dp"
+                app:srcCompat="@mipmap/ic_launcher"
+                app:weatherImage="@{location.weather[0].icon}" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_layout_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_large"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            app:isGone="@{!hasWeather}"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/scaleView">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:gravity="center"
+                android:text="@{String.format(@string/filslike,location.main.feelsLike-272.15)}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:textColor="@color/weather_gray_200"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/plant_name"
+                tools:text="feels like ..." />
+
+            <TextView
+                android:id="@+id/plant_name1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:gravity="center"
+                android:text="@{String.format(@string/temptemplate,location.weather[0].description)}"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:textColor="@color/weather_gray_200"
+                app:layout_constraintBottom_toTopOf="@+id/textView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/plant_name"
+                tools:text="30 C, szel minden" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:gravity="center"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:textColor="@color/weather_gray_200"
+                app:dateFormat="@{@string/date_format}"
+                app:layout_constraintBottom_toTopOf="@+id/textView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/plant_name"
+                app:setDateFromSeconds="@{location.dt}"
+                tools:text="23:34 febr 5" />
+
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/save_favorite_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/header_margin"
+            android:text="@string/save_favorite"
+            app:isGone="@{!hasWeather}"
+            app:backgroundTint="@color/weather_gray_900"
+            app:cornerRadius="@dimen/button_corner_radius"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/linear_layout_details" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/goto_details_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_large"
+            android:text="@string/go_to_details"
+            app:isGone="@{!hasWeather}"
+            app:backgroundTint="@color/weather_gray_900"
+            app:cornerRadius="@dimen/button_corner_radius"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/save_favorite_button" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
