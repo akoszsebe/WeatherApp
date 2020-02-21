@@ -8,5 +8,5 @@
     android:layout_margin="@dimen/margin_normal"
     android:gravity="center_vertical"
     android:ellipsize="marquee"
-    android:textColor="@color/weather_gray_300"
+    android:textColor="@color/weather_gray_900"
     android:textAlignment="inherit" />

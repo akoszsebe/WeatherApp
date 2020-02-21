@@ -13,4 +13,5 @@
     <string name="onlytemptemplate">%.0f °C</string>
     <string name="date_format">hh:mm:ss dd MMMM, yyyy</string>
     <string name="search_fragment_title">Search location</string>
+    <string name="please_select_one">Please select on item from  the list below</string>
 </resources>

@@ -46,16 +46,31 @@
             android:background="@drawable/rearch_bacgound"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"/>
+            app:layout_constraintTop_toBottomOf="@id/toolbar" />
+        <TextView
+            android:id="@+id/pleaseselect"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:gravity="start|center"
+            android:paddingStart="@dimen/margin_normal"
+            android:paddingEnd="@dimen/margin_normal"
+            android:text="@string/please_select_one"
+            android:textAppearance="?attr/textAppearanceBody1"
+            android:textColor="@color/weather_gray_200"
+            app:layout_constraintTop_toBottomOf="@id/searh_editext"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:isGone="@{!hasLocations}"/>
         <ListView
             android:id="@+id/listview_results"
             android:layout_width="match_parent"
             android:layout_margin="@dimen/margin_normal"
-            android:background="@drawable/rearch_bacgound"
+            android:background="@drawable/result_backgournd"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/searh_editext"
+            app:layout_constraintTop_toBottomOf="@id/pleaseselect"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:isGone="@{!hasLocations}"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

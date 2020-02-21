@@ -42,6 +42,7 @@ class LocationSearchFragment :
                     it.toString()
                 ).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe { locationList ->
+                        binding.hasLocations = false
                         viewModel.locationNameList.clear();
                         if (!locationList.isNullOrEmpty()) {
                             viewModel.locationList = locationList
@@ -50,6 +51,7 @@ class LocationSearchFragment :
                                     viewModel.locationNameList.add("unknown")
                                 } else {
                                     viewModel.locationNameList.add(i.featureName)
+                                    binding.hasLocations = true
                                 }
                             }
                         }
