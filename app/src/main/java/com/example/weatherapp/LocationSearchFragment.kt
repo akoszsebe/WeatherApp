@@ -93,6 +93,13 @@ open class LocationSearchFragment :
                 )
             view.findNavController().navigate(direction)
         }
+        binding.saveFavoriteButton.setOnClickListener {
+            disposables.add(viewModel.addToFavorites(binding.location!!.id).subscribe({
+                showToastMessage(getString(R.string.added_to_favorites))
+            },{
+                showErrorDialog(it.message)
+            }))
+        }
 
     }
 

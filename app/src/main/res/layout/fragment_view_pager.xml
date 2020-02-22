@@ -84,7 +84,7 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/margin_normal"
             app:backgroundTint="@color/weather_accent_color"
-            android:foreground="@drawable/ic_search_24"
+            android:foreground="@drawable/ic_add"
             android:foregroundGravity="center"
             android:onClick="@{(v) -> callback.onFabClicked(v)}"
             tools:targetApi="m" />

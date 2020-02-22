@@ -30,6 +30,16 @@ object BindingAdapters {
     }
 
     @JvmStatic
+    @BindingAdapter("isFavorite")
+    fun bindIsFavorite(view: ImageView, isFavorite: Boolean) {
+        if (isFavorite) {
+            view.setImageResource(R.drawable.ic_star_fill)
+        } else {
+            view.setImageResource(R.drawable.ic_star_unfill)
+        }
+    }
+
+    @JvmStatic
     @BindingAdapter("weatherImage")
     fun ImageView.loadImage(imageName: String?) {
         Glide.with(this)

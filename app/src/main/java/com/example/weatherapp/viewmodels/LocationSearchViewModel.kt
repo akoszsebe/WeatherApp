@@ -27,6 +27,14 @@ class LocationSearchViewModel internal constructor(
             .observeOn(AndroidSchedulers.mainThread())
     }
 
+    fun addToFavorites(locationId : Long): Single<Unit> {
+        return weatherRepository.addToFavorites(
+            locationId
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+    }
+
     fun getFromLocationName(
         geocoder: Geocoder,
         location: String

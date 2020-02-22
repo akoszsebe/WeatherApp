@@ -16,6 +16,7 @@
         android:theme="@style/Theme.Weather">
         <activity
             android:name=".WeatherActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Weather.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

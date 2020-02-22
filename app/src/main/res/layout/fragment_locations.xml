@@ -23,7 +23,7 @@
             android:layout_gravity="end"
             android:elevation="10dp"
             android:layout_marginStart="@dimen/margin_normal"
-            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_normal"
             android:layout_marginEnd="@dimen/margin_normal"
             android:background="@drawable/rearch_bacgound"
             android:clickable="true"
@@ -34,14 +34,14 @@
             android:id="@+id/locations_list_refresh"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginTop="56dp"
-            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginTop="68dp"
             android:clipToPadding="true">
 
             <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:paddingStart="@dimen/margin_normal"
+                android:paddingEnd="@dimen/margin_normal">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/locations_list"

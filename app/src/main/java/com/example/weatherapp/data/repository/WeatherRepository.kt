@@ -1,5 +1,6 @@
 package com.example.weatherapp.data.repository
 
+import com.example.weatherapp.data.model.FavoriteLocation
 import com.example.weatherapp.data.model.FiveDayForecast
 import com.example.weatherapp.data.model.LocationWithWeather
 import com.example.weatherapp.data.persistance.dao.LocationWeatherDao
@@ -14,7 +15,7 @@ class WeatherRepository(
     private val connectionHelper: ConnectionHelper
 ) {
 
-    fun getFiveDayForcastForLocationWithId(locationId: Long): Single<FiveDayForecast> {
+    fun getFiveDayForecastForLocationWithId(locationId: Long): Single<FiveDayForecast> {
         return Single.create<FiveDayForecast> { emitter: SingleEmitter<FiveDayForecast> ->
             loadFiveDayForecastByLocationIdFromNetwork(locationId, emitter)
         }
@@ -145,6 +146,15 @@ class WeatherRepository(
 
     //offline
 
+    private fun loadWeatherForFavoriteLocationsFromDb(emitter: SingleEmitter<List<LocationWithWeather>>) {
+        val locations = locationWeatherDao.getFavoriteLocations()
+        if (!locations.isEmpty()) {
+            emitter.onSuccess(locations)
+        } else {
+            emitter.onError(Exception("Device is offline"))
+        }
+    }
+
     private fun loadWeatherForLocationsFromDb(emitter: SingleEmitter<List<LocationWithWeather>>) {
         val locations = locationWeatherDao.getAllLocation()
         if (!locations.isEmpty()) {
@@ -159,4 +169,49 @@ class WeatherRepository(
         emitter.onSuccess(location)
     }
 
+    fun addToFavorites(locationId: Long) : Single<Unit>{
+        return Single.create<Unit> { emitter: SingleEmitter<Unit> ->
+            try {
+                locationWeatherDao.insertFavoriteLocation(FavoriteLocation(locationId))
+                emitter.onSuccess(Unit)
+            } catch (e : java.lang.Exception){
+                emitter.onError(e)
+            }
+
+        }
+    }
+
+    fun removeFromFavorites(locationId: Long) : Single<Unit>{
+        return Single.create<Unit> { emitter: SingleEmitter<Unit> ->
+            try {
+                locationWeatherDao.deleteFavoriteLocation(locationId)
+                emitter.onSuccess(Unit)
+            } catch (e : java.lang.Exception){
+                emitter.onError(e)
+            }
+
+        }
+    }
+
+    fun isFavoriteLocationWithId(locationId: Long) : Single<Boolean>{
+        return  Single.create<Boolean>{ emitter: SingleEmitter<Boolean> ->
+            try {
+                val isFavorite = locationWeatherDao.isFavoriteLocation(locationId) != null
+                emitter.onSuccess(isFavorite)
+            } catch (e: java.lang.Exception){
+                emitter.onError(e)
+            }
+        }
+    }
+
+    fun getWeatherForFavoriteLocations(): Single<List<LocationWithWeather>> {
+        return Single.create<List<LocationWithWeather>> { emitter: SingleEmitter<List<LocationWithWeather>> ->
+            if (connectionHelper.isOnline()) {
+                val ids : List<Long> = locationWeatherDao.getAllFavoriteLocations().map{it.locationId}
+                loadWeatherForLocationsFromNetwork(ids, emitter)
+            } else {
+                loadWeatherForFavoriteLocationsFromDb(emitter)
+            }
+        }
+    }
 }

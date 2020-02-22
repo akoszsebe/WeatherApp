@@ -34,10 +34,11 @@ class WeatherDetailFragment :
                 ((appBarLayout.totalScrollRange.toFloat() + verticalOffset.toFloat()) / appBarLayout.totalScrollRange.toFloat())
             scaleOption(binding.scaleView, scale)
             val fade: Float =
-                1 - ((appBarLayout.totalScrollRange.toFloat() + verticalOffset.toFloat())/ appBarLayout.totalScrollRange.toFloat())
+                1 - ((appBarLayout.totalScrollRange.toFloat() + verticalOffset.toFloat()) / appBarLayout.totalScrollRange.toFloat())
             fadeOption(binding.fadeView, fade)
+            binding.showFavorite = showFavorite(fade)
         })
-        fadeOption(binding.fadeView,1.0f)
+        fadeOption(binding.fadeView, 1.0f)
         binding.forecastForToday.adapter = adapterToday
         binding.forecastForTomorrow.adapter = adapterTomorrow
         binding.forecastForTheRemaining3Days.adapter = adapterForTheRemaining3Days
@@ -45,6 +46,29 @@ class WeatherDetailFragment :
             subscribeUi(true)
         }
         subscribeUi(false)
+        binding.buttonFavorite.setOnClickListener {
+            if (binding.isFavorite) {
+                disposables.add(
+                    viewModel.removeFromFavorites().subscribe(
+                        {
+                            binding.isFavorite = false
+                        },
+                        {
+                            showErrorDialog(it.message)
+                        })
+                )
+            } else {
+                disposables.add(
+                    viewModel.addToFavorites().subscribe(
+                        {
+                            binding.isFavorite = true
+                        },
+                        {
+                            showErrorDialog(it.message)
+                        })
+                )
+            }
+        }
     }
 
     private fun subscribeUi(
@@ -78,6 +102,14 @@ class WeatherDetailFragment :
                 showErrorDialog(it.message!!)
             }
         ))
+        disposables.add(viewModel.isFavoriteLocation().subscribe(
+            { isFavorite ->
+                binding.isFavorite = isFavorite
+            },
+            {
+                showErrorDialog(it.message!!)
+            })
+        )
     }
 
     private fun scaleOption(item: View?, scale: Float) {
@@ -86,5 +118,9 @@ class WeatherDetailFragment :
 
     private fun fadeOption(item: View?, fade: Float) {
         item?.animate()?.setDuration(0)?.alpha(fade)?.start()
+    }
+
+    private fun showFavorite(fade: Float): Boolean {
+        return !fade.equals(0.0f)
     }
 }

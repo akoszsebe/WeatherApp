@@ -7,6 +7,7 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -39,6 +40,18 @@ abstract class BaseFragment<B : ViewDataBinding, VM : ViewModel>(private var lay
         if (!disposables.isDisposed) {
             disposables.dispose()
         }
+    }
+
+    fun showToastMessage(message: String?){
+        Toast.makeText(this.requireContext(),message,Toast.LENGTH_SHORT).show()
+    }
+
+    fun showDialog(message: String?) {
+        AlertDialog.Builder(this.requireContext())
+            .setTitle("Info")
+            .setMessage(message)
+            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .show()
     }
 
     fun showErrorDialog(message: String?) {

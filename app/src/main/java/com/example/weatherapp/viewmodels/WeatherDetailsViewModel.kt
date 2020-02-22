@@ -14,7 +14,7 @@ class WeatherDetailsViewModel internal constructor(
 ) : ViewModel() {
 
     fun getFiveDayForecastForLocationWithId(): Single<FiveDayForecast> {
-        return weatherRepository.getFiveDayForcastForLocationWithId(
+        return weatherRepository.getFiveDayForecastForLocationWithId(
             locationId
         )
             .subscribeOn(Schedulers.io())
@@ -24,6 +24,30 @@ class WeatherDetailsViewModel internal constructor(
     fun getWeatherForLocationWithId(online: Boolean = true): Single<LocationWithWeather> {
         return weatherRepository.getWeatherForLocationWithId(
             locationId, online
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    fun isFavoriteLocation(): Single<Boolean> {
+        return weatherRepository.isFavoriteLocationWithId(
+            locationId
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    fun addToFavorites(): Single<Unit> {
+        return weatherRepository.addToFavorites(
+            locationId
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    fun removeFromFavorites(): Single<Unit> {
+        return weatherRepository.removeFromFavorites(
+            locationId
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

@@ -14,6 +14,16 @@ class LocationListViewModel internal constructor(
     var list: List<LocationWithWeather> = listOf()
 
     fun getFavoriteLocationsWeather(): Single<List<LocationWithWeather>> {
+        return weatherRepository.getWeatherForFavoriteLocations(
+        ).doOnSuccess {
+            list = it
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+    }
+
+
+    fun getALLLocationsWeather(): Single<List<LocationWithWeather>> {
         return weatherRepository.getWeatherForLocations(
             listOf(524901, 2643743, 681290)
         ).doOnSuccess {
