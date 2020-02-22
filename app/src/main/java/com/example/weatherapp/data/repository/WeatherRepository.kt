@@ -1,5 +1,6 @@
 package com.example.weatherapp.data.repository
 
+import com.example.weatherapp.data.model.FiveDayForecast
 import com.example.weatherapp.data.model.LocationWithWeather
 import com.example.weatherapp.data.persistance.dao.LocationWeatherDao
 import com.example.weatherapp.networking.api.WeatherApiService
@@ -13,19 +14,25 @@ class WeatherRepository(
     private val connectionHelper: ConnectionHelper
 ) {
 
-    fun getWeatherFromLocationName(locationName: String): Single<LocationWithWeather> {
+    fun getFiveDayForcastForLocationWithId(locationId: Long): Single<FiveDayForecast> {
+        return Single.create<FiveDayForecast> { emitter: SingleEmitter<FiveDayForecast> ->
+            loadFiveDayForecastByLocationIdFromNetwork(locationId, emitter)
+        }
+    }
+
+    fun getWeatherForLocationWithName(locationName: String): Single<LocationWithWeather> {
         return Single.create<LocationWithWeather> { emitter: SingleEmitter<LocationWithWeather> ->
             loadWeatherByLocationNameFromNetwork(locationName, emitter)
         }
     }
 
-    fun getWeatherFromLatLon(lat: Double, lon: Double): Single<LocationWithWeather> {
+    fun getWeatherForLocationWithLatLon(lat: Double, lon: Double): Single<LocationWithWeather> {
         return Single.create<LocationWithWeather> { emitter: SingleEmitter<LocationWithWeather> ->
             loadWeatherLatLonFromNetwork(lat, lon, emitter)
         }
     }
 
-    fun getWeatherForLocation(locationId: Long,online: Boolean = true): Single<LocationWithWeather> {
+    fun getWeatherForLocationWithId(locationId: Long, online: Boolean = true): Single<LocationWithWeather> {
         return Single.create<LocationWithWeather> { emitter: SingleEmitter<LocationWithWeather> ->
             if (connectionHelper.isOnline() && online) {
                 loadWeatherLocationFromNetwork(locationId, emitter)
@@ -46,12 +53,28 @@ class WeatherRepository(
     }
 
     //online
+    private fun loadFiveDayForecastByLocationIdFromNetwork(
+        locationId: Long,
+        emitter: SingleEmitter<FiveDayForecast>) {
+        try {
+            val fiveDayForecast = weatherApiService.getFiveDayForecastForLocationWithId(locationId).execute().body()
+            if (fiveDayForecast != null) {
+                //locationWeatherDao.insertWeatherForLocation(weather)
+                emitter.onSuccess(fiveDayForecast)
+            } else {
+                emitter.onError(Exception("No data received"))
+            }
+        } catch (exception: Exception) {
+            emitter.onError(exception)
+        }
+    }
+
     private fun loadWeatherByLocationNameFromNetwork(
         locationName: String,
         emitter: SingleEmitter<LocationWithWeather>
     ) {
         try {
-            val weather = weatherApiService.getWeatherForLocationByName(locationName).execute().body()
+            val weather = weatherApiService.getWeatherForLocationWithName(locationName).execute().body()
             if (weather != null) {
                 locationWeatherDao.insertWeatherForLocation(weather)
                 emitter.onSuccess(weather)
@@ -69,7 +92,7 @@ class WeatherRepository(
         emitter: SingleEmitter<LocationWithWeather>
     ) {
         try {
-            val weather = weatherApiService.getWeatherForLocation(locationId).execute().body()
+            val weather = weatherApiService.getWeatherForLocationWithId(locationId).execute().body()
             if (weather != null) {
 //                userDao.insertAll(users.items)
 //                val currentTime = calendarWrapper.getCurrentTimeInMillis()
@@ -88,7 +111,7 @@ class WeatherRepository(
         emitter: SingleEmitter<LocationWithWeather>
     ) {
         try {
-            val weather = weatherApiService.getWeatherForLatLon(lat, lon).execute().body()
+            val weather = weatherApiService.getWeatherForLocationWithLatLon(lat, lon).execute().body()
             if (weather != null) {
 //                userDao.insertAll(users.items)
 //                val currentTime = calendarWrapper.getCurrentTimeInMillis()
@@ -107,7 +130,7 @@ class WeatherRepository(
     ) {
         try {
             val weathers =
-                weatherApiService.getWeatherForLocations(ids.joinToString(",")).execute().body()
+                weatherApiService.getWeatherForLocationsWithIds(ids.joinToString(",")).execute().body()
             if (weathers != null) {
                 locationWeatherDao.deleteAllData()
                 locationWeatherDao.insertWeatherForLocations(weathers.list)

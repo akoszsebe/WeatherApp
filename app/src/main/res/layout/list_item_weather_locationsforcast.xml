@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<data>
+    <variable
+        name="clickListener"
+        type="android.view.View.OnClickListener"/>
+    <variable
+        name="location"
+        type="com.example.weatherapp.data.model.ListElement"/>
+    <variable
+        name="hasDivider"
+        type="boolean" />
+</data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/itemView"
+        android:layout_width="80dp"
+        android:layout_height="150dp"
+        android:background="?android:attr/selectableItemBackground">
+
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+            android:textColor="@color/weather_gray_200"
+            app:layout_constraintBottom_toTopOf="@+id/imageView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:dateFormat="@{@string/date_format_short}"
+            app:setDateFromSeconds="@{location.dt}"
+            tools:text="Tus 2" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            app:layout_constraintBottom_toTopOf="@+id/temp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/date"
+            app:weatherImage="@{location.weather[0].icon}"
+            tools:srcCompat="@drawable/tab_background_selected" />
+
+        <TextView
+            android:id="@+id/temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@{String.format(@string/onlytemptemplate,location.main.temp-272.15)}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:textColor="@color/weather_gray_50"
+            app:layout_constraintBottom_toTopOf="@+id/tempminmax"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView"
+            tools:text="24 C" />
+
+        <TextView
+            android:id="@+id/tempminmax"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@{String.format(@string/minmaxtemptemplate,location.main.tempMin-272.15, location.main.tempMax-272.15)}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+            android:textColor="@color/weather_gray_50"
+            app:layout_constraintBottom_toTopOf="@+id/plant_name1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/temp"
+            tools:text="24 / 4" />
+
+        <TextView
+            android:id="@+id/plant_name1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@{String.format(@string/temptemplate,location.weather[0].main)}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+            android:textColor="@color/weather_gray_200"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tempminmax"
+            tools:text="felhos" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    </layout>

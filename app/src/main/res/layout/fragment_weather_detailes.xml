@@ -4,12 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="hasData"
             type="boolean" />
+
         <variable
             name="location"
-            type="com.example.weatherapp.data.model.LocationWithWeather"/>
+            type="com.example.weatherapp.data.model.LocationWithWeather" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -41,13 +43,51 @@
                     android:layout_height="?attr/actionBarSize"
                     app:layout_collapseMode="pin">
 
-                    <TextView
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
-                        android:layout_height="?attr/actionBarSize"
-                        android:gravity="start|center"
-                        android:text="@{location.name}"
-                        android:textAppearance="?attr/textAppearanceHeadline5"
-                        android:textColor="@color/weather_gray_50" />
+                        android:layout_height="?attr/actionBarSize">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="?attr/actionBarSize"
+                            android:gravity="start|center"
+                            android:text="@{location.name}"
+                            android:textAppearance="?attr/textAppearanceHeadline5"
+                            android:textColor="@color/weather_gray_50"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <LinearLayout
+                            android:id="@+id/fadeView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginEnd="@dimen/margin_normal"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+                        <TextView
+                            android:id="@+id/textView2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center|center_horizontal"
+                            android:gravity="center"
+                            android:text="@{String.format(@string/onlytemptemplate,location.main.temp-272.15)}"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                            android:textColor="@color/weather_gray_50"
+                            tools:text="3 *C" />
+
+                        <ImageView
+                            android:id="@+id/imageView2"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:layout_gravity="center|center_horizontal"
+                            android:elevation="1dp"
+                            app:srcCompat="@mipmap/ic_launcher"
+                            app:weatherImage="@{location.weather[0].icon}" />
+                        </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.appcompat.widget.Toolbar>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
@@ -58,26 +98,28 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:translationY="20dp"
+            app:isGone="@{!hasData}"
             app:layout_anchor="@id/appBar"
-            app:layout_anchorGravity="center|bottom"
-            app:isGone="@{!hasData}">
+            app:layout_anchorGravity="center|bottom">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="100dp"
                 android:layout_gravity="center|center_horizontal"
                 android:gravity="center"
-                tools:text="3 *C"
                 android:text="@{String.format(@string/onlytemptemplate,location.main.temp-272.15)}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
-                android:textColor="@color/weather_gray_50" />
+                android:textColor="@color/weather_gray_50"
+                tools:text="3 *C" />
+
             <ImageView
-                android:layout_marginStart="@dimen/margin_small"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center|center_horizontal"
+                android:layout_marginStart="@dimen/margin_small"
                 android:elevation="1dp"
                 app:srcCompat="@mipmap/ic_launcher"
-                app:weatherImage="@{location.weather[0].icon}"/>
+                app:weatherImage="@{location.weather[0].icon}" />
         </LinearLayout>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -85,67 +127,147 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <LinearLayout
-                android:layout_marginTop="@dimen/margin_extra_large"
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:orientation="vertical"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                app:isGone="@{!hasData}">
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-                <TextView
-                    android:id="@+id/textView"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:gravity="center"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_small"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    android:text="@{String.format(@string/filslike,location.main.feelsLike-272.15)}"
-                    android:textColor="@color/weather_gray_200"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/plant_name"
-                    tools:text="feels like ..." />
+                    android:layout_marginTop="@dimen/margin_super_large"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:orientation="vertical"
+                    app:isGone="@{!hasData}"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-                <TextView
-                    android:id="@+id/plant_name1"
-                    android:layout_width="match_parent"
-                    android:gravity="center"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:text="@{String.format(@string/temptemplate,location.weather[0].description)}"
-                    android:textColor="@color/weather_gray_200"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    app:layout_constraintTop_toBottomOf="@+id/plant_name"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toTopOf="@+id/textView"
-                    tools:text="30 C, szel minden" />
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:gravity="center"
+                        android:text="@{String.format(@string/filslike,location.main.feelsLike-272.15)}"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        android:textColor="@color/weather_gray_200"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/plant_name"
+                        tools:text="feels like ..." />
 
-                <TextView
-                    android:id="@+id/date"
-                    android:layout_width="match_parent"
-                    android:gravity="center"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:textColor="@color/weather_gray_200"
-                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                    app:layout_constraintTop_toBottomOf="@+id/plant_name"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toTopOf="@+id/textView"
-                    tools:text="23:34 febr 5"
-                    app:setDateFromSeconds="@{location.dt}"
-                    app:dateFormat="@{@string/date_format}"
-                    />
+                    <TextView
+                        android:id="@+id/plant_name1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:gravity="center"
+                        android:text="@{String.format(@string/temptemplate,location.weather[0].description)}"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        android:textColor="@color/weather_gray_200"
+                        app:layout_constraintBottom_toTopOf="@+id/textView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/plant_name"
+                        tools:text="30 C, szel minden" />
 
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
+                    <TextView
+                        android:id="@+id/date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:gravity="center"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        android:textColor="@color/weather_gray_200"
+                        app:dateFormat="@{@string/date_format}"
+                        app:layout_constraintBottom_toTopOf="@+id/textView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/plant_name"
+                        app:setDateFromSeconds="@{location.dt}"
+                        tools:text="23:34 febr 5" />
+
+                    <TextView
+                        android:id="@+id/forcast"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        android:layout_marginTop="@dimen/margin_large"
+                        android:gravity="start"
+                        android:text="@string/forecast_for_today"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        android:textColor="@color/weather_gray_200"
+                        app:layout_constraintBottom_toTopOf="@+id/textView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/plant_name" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/forecast_for_today"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_small"
+                        android:background="@drawable/weather_list_background"
+                        android:nestedScrollingEnabled="false"
+                        android:orientation="horizontal"
+                        app:isGone="@{!hasData}"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:itemCount="4"
+                        tools:listitem="@layout/list_item_weather_locationsforcast" />
+
+                    <TextView
+                        android:id="@+id/forcast1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        android:layout_marginTop="@dimen/margin_large"
+                        android:gravity="start"
+                        android:text="@string/forecast_for_tomorrow"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        android:textColor="@color/weather_gray_200"
+                        app:layout_constraintBottom_toTopOf="@+id/textView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/plant_name" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/forecast_for_tomorrow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_small"
+                        android:background="@drawable/weather_list_background"
+                        android:nestedScrollingEnabled="false"
+                        android:orientation="horizontal"
+                        app:isGone="@{!hasData}"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:itemCount="4"
+                        tools:listitem="@layout/list_item_weather_locationsforcast" />
+
+                    <TextView
+                        android:id="@+id/forcast2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_normal"
+                        android:layout_marginTop="@dimen/margin_large"
+                        android:gravity="start"
+                        android:text="@string/forecast_for_the_remaining_3_days"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        android:textColor="@color/weather_gray_200"
+                        app:layout_constraintBottom_toTopOf="@+id/textView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/plant_name" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/forecast_for_the_remaining_3_days"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/margin_small"
+                        android:background="@drawable/weather_list_background"
+                        android:nestedScrollingEnabled="false"
+                        android:orientation="horizontal"
+                        app:isGone="@{!hasData}"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:itemCount="4"
+                        tools:listitem="@layout/list_item_weather_locationsforcast" />
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

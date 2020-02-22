@@ -12,7 +12,7 @@ class CurrentLocationViewModel internal constructor(
 ) : ViewModel() {
 
     fun getCurrentLocationWeather(): Single<LocationWithWeather> {
-        return weatherRepository.getWeatherFromLatLon(
+        return weatherRepository.getWeatherForLocationWithLatLon(
             52.4901, 26.43743
         )
             .subscribeOn(Schedulers.io())

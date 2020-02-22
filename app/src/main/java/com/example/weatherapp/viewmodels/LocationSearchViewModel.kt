@@ -20,7 +20,7 @@ class LocationSearchViewModel internal constructor(
     var locationNameList: MutableList<String> = mutableListOf()
 
     fun getLocationWeatherByName(locationName: String): Single<LocationWithWeather> {
-        return weatherRepository.getWeatherFromLocationName(
+        return weatherRepository.getWeatherForLocationWithName(
             locationName
         )
             .subscribeOn(Schedulers.io())

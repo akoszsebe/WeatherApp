@@ -1,7 +1,9 @@
 package com.example.weatherapp.adapters
 
 import android.text.TextWatcher
+import android.text.format.DateUtils
 import android.widget.EditText
+
 
 object Extentions {
 
@@ -11,4 +13,7 @@ object Extentions {
         this.addTextChangedListener(textWatcher)
     }
 
+    fun isTomorrow(timeInMilliseconds : Long): Boolean {
+        return DateUtils.isToday(timeInMilliseconds - DateUtils.DAY_IN_MILLIS)
+    }
 }
