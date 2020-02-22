@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import com.example.weatherapp.data.model.LocationWithWeather
 import com.example.weatherapp.data.repository.WeatherRepository
 import com.example.weatherapp.utils.ConnectionHelper
-import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.SingleEmitter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.io.IOException
@@ -27,7 +27,7 @@ class LocationSearchViewModel internal constructor(
             .observeOn(AndroidSchedulers.mainThread())
     }
 
-    fun addToFavorites(locationId : Long): Single<Unit> {
+    fun addToFavorites(locationId: Long): Single<Unit> {
         return weatherRepository.addToFavorites(
             locationId
         )
@@ -38,16 +38,18 @@ class LocationSearchViewModel internal constructor(
     fun getFromLocationName(
         geocoder: Geocoder,
         location: String
-    ): Observable<MutableList<Address>> {
-        return Observable.create { emitter ->
+    ): Single<MutableList<Address>> {
+        return Single.create { emitter: SingleEmitter<MutableList<Address>> ->
             try {
                 val locationList = geocoder.getFromLocationName(location, 5)
-                emitter.onNext(locationList)
-            } catch (ex : IOException){
+                emitter.onSuccess(locationList)
+            } catch (ex: IOException) {
                 emitter.onError(ex)
             }
 
         }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
 }

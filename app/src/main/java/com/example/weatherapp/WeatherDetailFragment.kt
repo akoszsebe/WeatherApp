@@ -8,6 +8,8 @@ import com.example.weatherapp.adapters.Extentions.isTomorrow
 import com.example.weatherapp.adapters.ForecastListAdapter
 import com.example.weatherapp.base.BaseFragment
 import com.example.weatherapp.databinding.FragmentWeatherDetailesBinding
+import com.example.weatherapp.utils.AnimationUtils.fadeOption
+import com.example.weatherapp.utils.AnimationUtils.scaleOption
 import com.example.weatherapp.utils.InjectorUtils
 import com.example.weatherapp.viewmodels.WeatherDetailsViewModel
 import com.google.android.material.appbar.AppBarLayout
@@ -110,14 +112,6 @@ class WeatherDetailFragment :
                 showErrorDialog(it.message!!)
             })
         )
-    }
-
-    private fun scaleOption(item: View?, scale: Float) {
-        item?.animate()?.scaleX(scale)?.scaleY(scale)?.setDuration(0)?.start()
-    }
-
-    private fun fadeOption(item: View?, fade: Float) {
-        item?.animate()?.setDuration(0)?.alpha(fade)?.start()
     }
 
     private fun showFavorite(fade: Float): Boolean {

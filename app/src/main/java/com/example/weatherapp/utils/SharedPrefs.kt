@@ -4,24 +4,22 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 
+private const val CURRENT_LOCATION: String = "current_location"
 
 class SharedPrefs(private val context: Context) {
 
-    fun getFavoriteLocations(): List<String> {
+    fun getCurrentLocation(): Long {
         val sharedPref: SharedPreferences =
-            context.getSharedPreferences("favorite_locations", MODE_PRIVATE)
-        var result = sharedPref.getStringSet("favorite_locations", HashSet())
-        return when (result) {
-            null -> listOf()
-            else -> result.toList()
-        }
+            context.getSharedPreferences(CURRENT_LOCATION, MODE_PRIVATE)
+        return sharedPref.getLong(CURRENT_LOCATION, 0)
     }
 
-    fun setFavoriteLocations(locations: List<String>) {
+
+    fun setCurrentLocation(locationId: Long) {
         val sharedPref: SharedPreferences =
-            context.getSharedPreferences("favorite_locations", MODE_PRIVATE)
+            context.getSharedPreferences(CURRENT_LOCATION, MODE_PRIVATE)
         val editor = sharedPref.edit()
-        editor.putStringSet("favorite_locations", locations.toSet())
+        editor.putLong(CURRENT_LOCATION, locationId)
         editor.apply()
     }
 

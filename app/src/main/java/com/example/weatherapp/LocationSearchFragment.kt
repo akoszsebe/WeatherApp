@@ -1,46 +1,36 @@
 package com.example.weatherapp
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.LocationManager
-import android.os.Build
 import android.os.Bundle
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.ArrayAdapter
-import androidx.core.app.ActivityCompat
 import androidx.navigation.findNavController
 import com.example.weatherapp.base.BaseFragment
 import com.example.weatherapp.databinding.FragmentLocationSearchBinding
 import com.example.weatherapp.utils.InjectorUtils
+import com.example.weatherapp.utils.LocationHelper
 import com.example.weatherapp.viewmodels.LocationSearchViewModel
-import com.google.android.gms.location.*
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
 import java.util.*
 
-
-open class LocationSearchFragment :
+class LocationSearchFragment :
     BaseFragment<FragmentLocationSearchBinding, LocationSearchViewModel>(R.layout.fragment_location_search) {
 
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var locationRequest: LocationRequest
-    private val INTERVAL: Long = 2000
-    private val FASTEST_INTERVAL: Long = 1000
-    private val REQUEST_PERMISSION_LOCATION = 10
+    private lateinit var locationHelper: LocationHelper
     private lateinit var geocoder: Geocoder
-    lateinit var adapter: ArrayAdapter<String>
+    private lateinit var adapter: ArrayAdapter<String>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = InjectorUtils.provideLocationSearchViewModelFactory(this)
             .create(LocationSearchViewModel::class.java)
 
-        if (!viewModel.connectionHelper.isOnline()){
+        if (!viewModel.connectionHelper.isOnline()) {
             showErrorDialog("This page is working only in online mode")
         }
 
@@ -49,7 +39,6 @@ open class LocationSearchFragment :
             this.requireContext(),
             R.layout.simple_spinner_item, viewModel.locationNameList
         )
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.requireContext())
         binding.listviewResults.adapter = adapter
         geocoder = Geocoder(this.requireContext(), Locale.ENGLISH)
         binding.searhEditext.addTextChangedListener(textWatcher)
@@ -57,15 +46,16 @@ open class LocationSearchFragment :
             setLocationName(viewModel.locationNameList[position])
             binding.hasLocationSuggestions = false
         }
+        locationHelper = LocationHelper()
         binding.buttonGps.setOnClickListener {
-            if (checkPermissionForLocation(this.requireContext())) {
+            if (locationHelper.checkPermissionForLocation(this.requireActivity())) {
                 val locationManager =
                     this.requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
                 if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     showDialogNoGps()
                 } else {
                     showLoader()
-                    startLocationUpdates()
+                    locationHelper.startLocationUpdates(this.requireContext(), locationCallback)
                 }
             }
         }
@@ -96,7 +86,7 @@ open class LocationSearchFragment :
         binding.saveFavoriteButton.setOnClickListener {
             disposables.add(viewModel.addToFavorites(binding.location!!.id).subscribe({
                 showToastMessage(getString(R.string.added_to_favorites))
-            },{
+            }, {
                 showErrorDialog(it.message)
             }))
         }
@@ -105,37 +95,7 @@ open class LocationSearchFragment :
 
     override fun onDestroy() {
         super.onDestroy()
-        stopLocationUpdates()
-    }
-
-    private fun startLocationUpdates() {
-        locationRequest = LocationRequest()
-        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = INTERVAL
-        locationRequest.fastestInterval = FASTEST_INTERVAL
-
-        val builder = LocationSettingsRequest.Builder()
-        builder.addLocationRequest(locationRequest)
-        val locationSettingsRequest = builder.build()
-
-        val settingsClient = LocationServices.getSettingsClient(this.requireContext())
-        settingsClient.checkLocationSettings(locationSettingsRequest)
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.requireContext())
-        if (ActivityCompat.checkSelfPermission(
-                this.requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this.requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
-        }
-        fusedLocationClient.requestLocationUpdates(
-            locationRequest, mLocationCallback,
-            Looper.myLooper()
-        )
+        locationHelper.stopLocationUpdates(locationCallback)
     }
 
     private fun setLocationName(text: String) {
@@ -145,40 +105,18 @@ open class LocationSearchFragment :
         binding.searhEditext.addTextChangedListener(textWatcher)
     }
 
-    private fun stopLocationUpdates() {
-        fusedLocationClient.removeLocationUpdates(mLocationCallback)
-    }
 
-    fun checkPermissionForLocation(context: Context): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-
-            if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED
-            ) {
-                true
-            } else {
-                ActivityCompat.requestPermissions(
-                    this.requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                    REQUEST_PERMISSION_LOCATION
-                )
-                false
-            }
-        } else {
-            true
-        }
-    }
-
-    private val mLocationCallback = object : LocationCallback() {
+    private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             if (locationResult.lastLocation != null) {
-                var result = geocoder.getFromLocation(
+                val result = geocoder.getFromLocation(
                     locationResult.lastLocation.latitude,
                     locationResult.lastLocation.longitude,
                     1
                 )
                 setLocationName(result[0].locality)
                 hideLoader()
-                stopLocationUpdates()
+                locationHelper.stopLocationUpdates(this)
             }
         }
     }
@@ -204,11 +142,11 @@ open class LocationSearchFragment :
 
     private fun textChanged(it: Editable?) {
         if (!it.isNullOrEmpty()) {
-            disposables.add(viewModel.getFromLocationName(
-                geocoder,
-                it.toString()
-            ).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe({ locationList ->
+            disposables.add(
+                viewModel.getFromLocationName(
+                    geocoder,
+                    it.toString()
+                ).subscribe({ locationList ->
                     binding.hasLocationSuggestions = false
                     viewModel.locationNameList.clear()
                     if (!locationList.isNullOrEmpty()) {

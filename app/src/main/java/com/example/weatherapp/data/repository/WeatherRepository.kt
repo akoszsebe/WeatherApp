@@ -17,23 +17,32 @@ class WeatherRepository(
 
     fun getFiveDayForecastForLocationWithId(locationId: Long): Single<FiveDayForecast> {
         return Single.create<FiveDayForecast> { emitter: SingleEmitter<FiveDayForecast> ->
-            loadFiveDayForecastByLocationIdFromNetwork(locationId, emitter)
+            if (connectionHelper.isOnline()) {
+                loadFiveDayForecastByLocationIdFromNetwork(locationId, emitter)
+            }
         }
     }
 
     fun getWeatherForLocationWithName(locationName: String): Single<LocationWithWeather> {
         return Single.create<LocationWithWeather> { emitter: SingleEmitter<LocationWithWeather> ->
-            loadWeatherByLocationNameFromNetwork(locationName, emitter)
+            if (connectionHelper.isOnline()) {
+                loadWeatherByLocationNameFromNetwork(locationName, emitter)
+            }
         }
     }
 
     fun getWeatherForLocationWithLatLon(lat: Double, lon: Double): Single<LocationWithWeather> {
         return Single.create<LocationWithWeather> { emitter: SingleEmitter<LocationWithWeather> ->
-            loadWeatherLatLonFromNetwork(lat, lon, emitter)
+            if (connectionHelper.isOnline()) {
+                loadWeatherLatLonFromNetwork(lat, lon, emitter)
+            }
         }
     }
 
-    fun getWeatherForLocationWithId(locationId: Long, online: Boolean = true): Single<LocationWithWeather> {
+    fun getWeatherForLocationWithId(
+        locationId: Long,
+        online: Boolean = true
+    ): Single<LocationWithWeather> {
         return Single.create<LocationWithWeather> { emitter: SingleEmitter<LocationWithWeather> ->
             if (connectionHelper.isOnline() && online) {
                 loadWeatherLocationFromNetwork(locationId, emitter)
@@ -56,9 +65,11 @@ class WeatherRepository(
     //online
     private fun loadFiveDayForecastByLocationIdFromNetwork(
         locationId: Long,
-        emitter: SingleEmitter<FiveDayForecast>) {
+        emitter: SingleEmitter<FiveDayForecast>
+    ) {
         try {
-            val fiveDayForecast = weatherApiService.getFiveDayForecastForLocationWithId(locationId).execute().body()
+            val fiveDayForecast =
+                weatherApiService.getFiveDayForecastForLocationWithId(locationId).execute().body()
             if (fiveDayForecast != null) {
                 //locationWeatherDao.insertWeatherForLocation(weather)
                 emitter.onSuccess(fiveDayForecast)
@@ -75,7 +86,8 @@ class WeatherRepository(
         emitter: SingleEmitter<LocationWithWeather>
     ) {
         try {
-            val weather = weatherApiService.getWeatherForLocationWithName(locationName).execute().body()
+            val weather =
+                weatherApiService.getWeatherForLocationWithName(locationName).execute().body()
             if (weather != null) {
                 locationWeatherDao.insertWeatherForLocation(weather)
                 emitter.onSuccess(weather)
@@ -95,8 +107,7 @@ class WeatherRepository(
         try {
             val weather = weatherApiService.getWeatherForLocationWithId(locationId).execute().body()
             if (weather != null) {
-//                userDao.insertAll(users.items)
-//                val currentTime = calendarWrapper.getCurrentTimeInMillis()
+                locationWeatherDao.insertWeatherForLocation(weather)
                 emitter.onSuccess(weather)
             } else {
                 emitter.onError(Exception("No data received"))
@@ -112,10 +123,10 @@ class WeatherRepository(
         emitter: SingleEmitter<LocationWithWeather>
     ) {
         try {
-            val weather = weatherApiService.getWeatherForLocationWithLatLon(lat, lon).execute().body()
+            val weather =
+                weatherApiService.getWeatherForLocationWithLatLon(lat, lon).execute().body()
             if (weather != null) {
-//                userDao.insertAll(users.items)
-//                val currentTime = calendarWrapper.getCurrentTimeInMillis()
+                locationWeatherDao.insertWeatherForLocation(weather)
                 emitter.onSuccess(weather)
             } else {
                 emitter.onError(Exception("No data received"))
@@ -131,9 +142,10 @@ class WeatherRepository(
     ) {
         try {
             val weathers =
-                weatherApiService.getWeatherForLocationsWithIds(ids.joinToString(",")).execute().body()
+                weatherApiService.getWeatherForLocationsWithIds(ids.joinToString(",")).execute()
+                    .body()
             if (weathers != null) {
-                locationWeatherDao.deleteAllData()
+                //locationWeatherDao.deleteAllData()
                 locationWeatherDao.insertWeatherForLocations(weathers.list)
                 emitter.onSuccess(weathers.list)
             } else {
@@ -148,7 +160,7 @@ class WeatherRepository(
 
     private fun loadWeatherForFavoriteLocationsFromDb(emitter: SingleEmitter<List<LocationWithWeather>>) {
         val locations = locationWeatherDao.getFavoriteLocations()
-        if (!locations.isEmpty()) {
+        if (locations.isNotEmpty()) {
             emitter.onSuccess(locations)
         } else {
             emitter.onError(Exception("Device is offline"))
@@ -157,48 +169,51 @@ class WeatherRepository(
 
     private fun loadWeatherForLocationsFromDb(emitter: SingleEmitter<List<LocationWithWeather>>) {
         val locations = locationWeatherDao.getAllLocation()
-        if (!locations.isEmpty()) {
+        if (locations.isNotEmpty()) {
             emitter.onSuccess(locations)
         } else {
             emitter.onError(Exception("Device is offline"))
         }
     }
 
-    private fun loadWeatherLocationFromDb(locationId: Long, emitter: SingleEmitter<LocationWithWeather>) {
+    private fun loadWeatherLocationFromDb(
+        locationId: Long,
+        emitter: SingleEmitter<LocationWithWeather>
+    ) {
         val location = locationWeatherDao.getLocationById(locationId)
         emitter.onSuccess(location)
     }
 
-    fun addToFavorites(locationId: Long) : Single<Unit>{
+    fun addToFavorites(locationId: Long): Single<Unit> {
         return Single.create<Unit> { emitter: SingleEmitter<Unit> ->
             try {
                 locationWeatherDao.insertFavoriteLocation(FavoriteLocation(locationId))
                 emitter.onSuccess(Unit)
-            } catch (e : java.lang.Exception){
+            } catch (e: java.lang.Exception) {
                 emitter.onError(e)
             }
 
         }
     }
 
-    fun removeFromFavorites(locationId: Long) : Single<Unit>{
+    fun removeFromFavorites(locationId: Long): Single<Unit> {
         return Single.create<Unit> { emitter: SingleEmitter<Unit> ->
             try {
                 locationWeatherDao.deleteFavoriteLocation(locationId)
                 emitter.onSuccess(Unit)
-            } catch (e : java.lang.Exception){
+            } catch (e: java.lang.Exception) {
                 emitter.onError(e)
             }
 
         }
     }
 
-    fun isFavoriteLocationWithId(locationId: Long) : Single<Boolean>{
-        return  Single.create<Boolean>{ emitter: SingleEmitter<Boolean> ->
+    fun isFavoriteLocationWithId(locationId: Long): Single<Boolean> {
+        return Single.create<Boolean> { emitter: SingleEmitter<Boolean> ->
             try {
                 val isFavorite = locationWeatherDao.isFavoriteLocation(locationId) != null
                 emitter.onSuccess(isFavorite)
-            } catch (e: java.lang.Exception){
+            } catch (e: java.lang.Exception) {
                 emitter.onError(e)
             }
         }
@@ -207,7 +222,8 @@ class WeatherRepository(
     fun getWeatherForFavoriteLocations(): Single<List<LocationWithWeather>> {
         return Single.create<List<LocationWithWeather>> { emitter: SingleEmitter<List<LocationWithWeather>> ->
             if (connectionHelper.isOnline()) {
-                val ids : List<Long> = locationWeatherDao.getAllFavoriteLocations().map{it.locationId}
+                val ids: List<Long> =
+                    locationWeatherDao.getAllFavoriteLocations().map { it.locationId }
                 loadWeatherForLocationsFromNetwork(ids, emitter)
             } else {
                 loadWeatherForFavoriteLocationsFromDb(emitter)
