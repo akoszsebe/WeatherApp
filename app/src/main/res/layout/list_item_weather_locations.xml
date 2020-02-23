@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <variable
+            name="unitOfMeasurement"
+            type="com.example.weatherapp.utils.UnitOfMeasurement" />
+
         <variable
             name="clickListener"
-            type="android.view.View.OnClickListener"/>
+            type="android.view.View.OnClickListener" />
+
         <variable
             name="location"
-            type="com.example.weatherapp.data.model.LocationWithWeather"/>
+            type="com.example.weatherapp.data.model.LocationWithWeather" />
+
         <variable
             name="hasDivider"
             type="boolean" />
@@ -17,9 +24,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/itemView"
-        android:background="?android:attr/selectableItemBackground"
         android:layout_width="match_parent"
-        android:layout_height="86dp">
+        android:layout_height="86dp"
+        android:background="?android:attr/selectableItemBackground">
 
         <TextView
             android:id="@+id/plant_name"
@@ -29,8 +36,8 @@
             android:layout_marginTop="@dimen/margin_small"
             android:gravity="center_horizontal"
             android:text="@{location.name}"
-            android:textColor="@color/weather_gray_50"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:textColor="@color/weather_gray_50"
             app:layout_constraintBottom_toTopOf="@+id/plant_name1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -43,11 +50,11 @@
             android:layout_marginStart="@dimen/margin_normal"
             android:gravity="center_horizontal"
             android:text="@{String.format(@string/temptemplate,location.weather[0].description)}"
-            android:textColor="@color/weather_gray_200"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
-            app:layout_constraintTop_toBottomOf="@+id/plant_name"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textColor="@color/weather_gray_200"
             app:layout_constraintBottom_toTopOf="@+id/textView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/plant_name"
             tools:text="30 C, szel minden" />
 
         <ImageView
@@ -58,23 +65,24 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/temp"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@drawable/tab_background_selected"
-            app:weatherImage="@{location.weather[0].icon}" />
+            app:weatherImage="@{location.weather[0].icon}"
+            tools:srcCompat="@drawable/tab_background_selected" />
 
         <TextView
             android:id="@+id/temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_small"
-            android:layout_marginBottom="@dimen/margin_small"
             android:layout_marginEnd="@dimen/margin_normal"
+            android:layout_marginBottom="@dimen/margin_small"
             android:gravity="center_horizontal"
-            android:text="@{String.format(@string/onlytemptemplate,location.main.temp-272.15)}"
-            android:textColor="@color/weather_gray_50"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+            android:textColor="@color/weather_gray_50"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:setTemperatureUnit="@{unitOfMeasurement}"
+            app:setTextUnitConverted="@{location.main.temp}"
             tools:text="24 C" />
 
         <TextView
@@ -83,20 +91,33 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_small"
             android:layout_marginBottom="@dimen/margin_small"
-            android:text="@{String.format(@string/filslike,location.main.feelsLike-272.15)}"
+            android:text="@string/filslike"
             android:textColor="@color/weather_gray_200"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/plant_name"
             tools:text="feels like ..." />
 
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/margin_small"
+            app:setTemperatureUnit="@{unitOfMeasurement}"
+            app:setTextUnitConverted="@{location.main.feelsLike}"
+            android:textColor="@color/weather_gray_200"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView"
+            tools:text="3 C" />
+
         <View
             android:id="@+id/dividerView"
-            app:isGone="@{!hasDivider}"
-            android:layout_marginStart="@dimen/margin_normal"
-            android:layout_marginEnd="@dimen/margin_normal"
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:layout_marginStart="@dimen/margin_normal"
+            android:layout_marginEnd="@dimen/margin_normal"
             android:background="@android:color/darker_gray"
+            app:isGone="@{!hasDivider}"
             app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

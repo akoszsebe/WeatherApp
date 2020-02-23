@@ -47,7 +47,7 @@ class WeatherActivity : AppCompatActivity() {
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe { networkState ->
                 when (networkState) {
-                    NetworkState.ONNLINE -> textViewOffline?.visibility = View.GONE
+                    NetworkState.ONLINE -> textViewOffline?.visibility = View.GONE
                     NetworkState.OFFLINE -> textViewOffline?.visibility = View.VISIBLE
                     else -> textViewOffline?.visibility = View.VISIBLE
                 }
@@ -73,7 +73,7 @@ class WeatherActivity : AppCompatActivity() {
         return Observable.create { emitter ->
             val networkCallback: NetworkCallback = object : NetworkCallback() {
                 override fun onAvailable(network: Network) {
-                    emitter.onNext(NetworkState.ONNLINE)
+                    emitter.onNext(NetworkState.ONLINE)
                 }
 
                 override fun onLost(network: Network) {
@@ -84,7 +84,7 @@ class WeatherActivity : AppCompatActivity() {
                 connectivityManager.unregisterNetworkCallback(networkCallback)
             }
             when (connectionHelper.isOnline()) {
-                true -> emitter.onNext(NetworkState.ONNLINE)
+                true -> emitter.onNext(NetworkState.ONLINE)
                 else -> emitter.onNext(NetworkState.OFFLINE)
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

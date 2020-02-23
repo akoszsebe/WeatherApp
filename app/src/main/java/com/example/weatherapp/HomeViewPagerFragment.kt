@@ -2,6 +2,7 @@ package com.example.weatherapp
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import androidx.navigation.findNavController
 import com.example.weatherapp.adapters.CURRENT_LOCATION_PAGE_INDEX
 import com.example.weatherapp.adapters.LOCATIONS_PAGE_INDEX
@@ -38,6 +39,13 @@ class HomeViewPagerFragment :
                     HomeViewPagerFragmentDirections.actionViewPagerFragmentToLocationSearchFragment()
                 view.findNavController().navigate(direction)
             }
+
+            override fun onSettingsClicked(view: View?){
+                view as ImageView
+                val direction =
+                    HomeViewPagerFragmentDirections.actionViewPagerFragmentToSettingsFragment()
+                view.findNavController().navigate(direction)
+            }
         }
     }
 
@@ -51,5 +59,6 @@ class HomeViewPagerFragment :
 
     interface Callback {
         fun onFabClicked(view: View?)
+        fun onSettingsClicked(view: View?)
     }
 }

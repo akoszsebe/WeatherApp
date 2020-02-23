@@ -25,7 +25,7 @@
             android:layout_marginStart="@dimen/margin_normal"
             android:layout_marginTop="@dimen/margin_normal"
             android:layout_marginEnd="@dimen/margin_normal"
-            android:background="@drawable/rearch_bacgound"
+            android:background="@drawable/darkgray_rounded_backgound"
             android:clickable="true"
             android:focusable="true"
             app:isGone="@{!hasLocations}" />

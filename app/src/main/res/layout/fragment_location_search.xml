@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="unitOfMeasurement"
+            type="com.example.weatherapp.utils.UnitOfMeasurement" />
+
+        <variable
             name="hasLocationSuggestions"
             type="boolean" />
 
@@ -22,7 +26,10 @@
         android:id="@+id/coordinator_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -48,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:layout_margin="@dimen/margin_normal"
-            android:background="@drawable/rearch_bacgound"
+            android:background="@drawable/darkgray_rounded_backgound"
             android:hint="@string/search_hint"
             android:paddingStart="@dimen/margin_normal"
             android:paddingEnd="@dimen/margin_normal"
@@ -95,7 +102,7 @@
             android:id="@+id/scaleView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_extra_large"
+            android:layout_marginTop="@dimen/margin_large_medium"
             android:orientation="horizontal"
             app:isGone="@{!hasWeather}"
             app:layout_constraintEnd_toEndOf="parent"
@@ -107,9 +114,10 @@
                 android:layout_height="100dp"
                 android:layout_gravity="center|center_horizontal"
                 android:gravity="center"
-                android:text="@{String.format(@string/onlytemptemplate,location.main.temp-272.15)}"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
                 android:textColor="@color/weather_gray_50"
+                app:setTemperatureUnit="@{unitOfMeasurement}"
+                app:setTextUnitConverted="@{location.main.temp}"
                 tools:text="3 *C" />
 
             <ImageView
@@ -122,64 +130,72 @@
                 app:weatherImage="@{location.weather[0].icon}" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/linear_layout_details"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_large"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:orientation="vertical"
+            android:gravity="center"
+            android:text="@string/filslike"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:textColor="@color/weather_gray_200"
             app:isGone="@{!hasWeather}"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintEnd_toStartOf="@+id/textViewFeelsLike"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/scaleView"
+            tools:text="feels like ..." />
+
+        <TextView
+            android:id="@+id/textViewFeelsLike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_large"
+            android:layout_marginStart="@dimen/margin_small"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:textColor="@color/weather_gray_200"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView"
+            app:layout_constraintTop_toBottomOf="@+id/scaleView"
+            app:isGone="@{!hasWeather}"
+            app:setTemperatureUnit="@{unitOfMeasurement}"
+            app:setTextUnitConverted="@{location.main.feelsLike}"
+            tools:text="3 C" />
+
+        <TextView
+            android:id="@+id/plant_name1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:gravity="center"
+            android:text="@{String.format(@string/temptemplate,location.weather[0].description)}"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:textColor="@color/weather_gray_200"
+            app:isGone="@{!hasWeather}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/scaleView">
+            app:layout_constraintTop_toBottomOf="@id/textView"
+            tools:text="30 C, szel minden" />
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
-                android:layout_marginBottom="@dimen/margin_small"
-                android:gravity="center"
-                android:text="@{String.format(@string/filslike,location.main.feelsLike-272.15)}"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                android:textColor="@color/weather_gray_200"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/plant_name"
-                tools:text="feels like ..." />
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:textColor="@color/weather_gray_200"
+            app:isGone="@{!hasWeather}"
+            app:dateFormat="@{@string/date_format}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/plant_name1"
+            app:setDateFromSeconds="@{location.dt}"
+            tools:text="23:34 febr 5" />
 
-            <TextView
-                android:id="@+id/plant_name1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
-                android:gravity="center"
-                android:text="@{String.format(@string/temptemplate,location.weather[0].description)}"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                android:textColor="@color/weather_gray_200"
-                app:layout_constraintBottom_toTopOf="@+id/textView"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/plant_name"
-                tools:text="30 C, szel minden" />
-
-            <TextView
-                android:id="@+id/date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
-                android:gravity="center"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-                android:textColor="@color/weather_gray_200"
-                app:dateFormat="@{@string/date_format}"
-                app:layout_constraintBottom_toTopOf="@+id/textView"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/plant_name"
-                app:setDateFromSeconds="@{location.dt}"
-                tools:text="23:34 febr 5" />
-
-        </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/save_favorite_button"
@@ -187,12 +203,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/header_margin"
             android:text="@string/save_favorite"
-            app:isGone="@{!hasWeather}"
             app:backgroundTint="@color/weather_gray_900"
             app:cornerRadius="@dimen/button_corner_radius"
+            app:isGone="@{!hasWeather}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/linear_layout_details" />
+            app:layout_constraintTop_toBottomOf="@id/date" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/goto_details_button"
@@ -200,9 +216,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_large"
             android:text="@string/go_to_details"
-            app:isGone="@{!hasWeather}"
             app:backgroundTint="@color/weather_gray_900"
             app:cornerRadius="@dimen/button_corner_radius"
+            app:isGone="@{!hasWeather}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/save_favorite_button" />

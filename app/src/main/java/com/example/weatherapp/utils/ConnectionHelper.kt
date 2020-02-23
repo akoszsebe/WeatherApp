@@ -3,7 +3,7 @@ package com.example.weatherapp.utils
 import android.content.Context
 import android.net.ConnectivityManager
 
-public final class ConnectionHelper(private val context: Context) {
+class ConnectionHelper(private val context: Context) {
 
     companion object {
 

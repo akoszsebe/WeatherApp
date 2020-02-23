@@ -9,7 +9,7 @@
     <string name="no_data">No data</string>
     <string name="temptemplate">%s</string>
     <string name="search_hint">Search..</string>
-    <string name="filslike">feels like %.0f °C</string>
+    <string name="filslike">feels like</string>
     <string name="onlytemptemplate">%.0f °C</string>
     <string name="date_format">h:mm aa dd MMMM</string>
     <string name="date_format_short">h:m aa EE </string>
@@ -24,4 +24,22 @@
     <string name="minmaxtemptemplate">%.0f° / %.0f°</string>
     <string name="forecast_for_3_days">Forecast for 3 days</string>
     <string name="added_to_favorites">Added to favorites</string>
+    <string name="settings_fragment_title">Settings</string>
+    <string name="main_fragment_title">Weather</string>
+    <string name="unit">Unit of Measurement</string>
+    <string name="auto_refresh">Auto Refresh</string>
+
+    <string-array name="units_array">
+        <item>°C (Celsius)</item>
+        <item>°F (Fahrenheit)</item>
+        <item>K (Kelvin)</item>
+    </string-array>
+
+    <string-array name="auto_refresh_array">
+        <item>Never</item>
+        <item>Every hour</item>
+        <item>Every 6 hour</item>
+        <item>Every 12 hour</item>
+        <item>Every 24 hour</item>
+    </string-array>
 </resources>

@@ -34,6 +34,7 @@ class LocationSearchFragment :
             showErrorDialog("This page is working only in online mode")
         }
 
+        binding.unitOfMeasurement = unitOfMeasurement
         setToolbar(binding.toolbar, true)
         adapter = ArrayAdapter(
             this.requireContext(),

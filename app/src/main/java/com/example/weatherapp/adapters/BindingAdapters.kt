@@ -14,8 +14,11 @@ import com.bumptech.glide.request.transition.DrawableCrossFadeTransition
 import com.bumptech.glide.request.transition.Transition
 import com.bumptech.glide.request.transition.TransitionFactory
 import com.example.weatherapp.R
+import com.example.weatherapp.utils.Extensions.of
+import com.example.weatherapp.utils.UnitOfMeasurement
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 object BindingAdapters {
 
@@ -54,10 +57,22 @@ object BindingAdapters {
     @JvmStatic
     @BindingAdapter("setDateFromSeconds", "dateFormat")
     fun TextView.setDateFromSeconds(long : Long, dateFormat: String){
-        val formatter = SimpleDateFormat(dateFormat)
+        val formatter = SimpleDateFormat(dateFormat,Locale.getDefault())
         val calendar: Calendar = Calendar.getInstance()
         calendar.timeInMillis = long * 1000
-        this.text =  formatter.format(calendar.getTime())
+        this.text =  formatter.format(calendar.time)
+    }
+
+    @JvmStatic
+    @BindingAdapter("setTextUnitConverted", "setTemperatureUnit")
+    fun TextView.setTextUnitConverted(temp : Double, unitOfMeasurement: UnitOfMeasurement){
+        this.text =  temp.of(unitOfMeasurement).roundToInt().toString().of(unitOfMeasurement)
+    }
+
+    @JvmStatic
+    @BindingAdapter("setTextUnitConverted1","setTextUnitConverted2", "setTemperatureUnit")
+    fun TextView.setTextUnitConvertedMultiple(temp1 : Double, temp2 : Double, unitOfMeasurement: UnitOfMeasurement){
+        this.text =  this.context.getString(R.string.minmaxtemptemplate,temp1.of(unitOfMeasurement), temp1.of(unitOfMeasurement))
     }
 
 }

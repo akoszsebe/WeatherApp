@@ -6,14 +6,13 @@ import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.View
 import androidx.core.widget.NestedScrollView
-import com.example.weatherapp.adapters.Extentions
 import com.example.weatherapp.adapters.ForecastListAdapter
 import com.example.weatherapp.base.BaseFragment
 import com.example.weatherapp.databinding.FragmentCurrentLocationBinding
 import com.example.weatherapp.utils.AnimationUtils
+import com.example.weatherapp.utils.Extensions
 import com.example.weatherapp.utils.InjectorUtils
 import com.example.weatherapp.utils.LocationHelper
-import com.example.weatherapp.utils.SharedPrefs
 import com.example.weatherapp.viewmodels.CurrentLocationViewModel
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
@@ -22,21 +21,19 @@ import com.google.android.gms.location.LocationResult
 class CurrentLocationFragment :
     BaseFragment<FragmentCurrentLocationBinding, CurrentLocationViewModel>(R.layout.fragment_current_location) {
 
-    private lateinit var sharedPrefs: SharedPrefs
     private lateinit var locationHelper: LocationHelper
     private lateinit var adapterToday: ForecastListAdapter
     private lateinit var adapterTomorrow: ForecastListAdapter
     private lateinit var adapterForTheRemaining3Days: ForecastListAdapter
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapterToday = ForecastListAdapter()
-        adapterTomorrow = ForecastListAdapter()
-        adapterForTheRemaining3Days = ForecastListAdapter()
-        sharedPrefs = SharedPrefs(this.requireContext())
+        adapterToday = ForecastListAdapter(unitOfMeasurement)
+        adapterTomorrow = ForecastListAdapter(unitOfMeasurement)
+        adapterForTheRemaining3Days = ForecastListAdapter(unitOfMeasurement)
         locationHelper = LocationHelper()
         viewModel = InjectorUtils.provideCurrentLocationViewModelFactory(this)
             .create(CurrentLocationViewModel::class.java)
-
+        binding.unitOfMeasurement = unitOfMeasurement
         setToolbar(binding.toolbar, false)
         binding.scrollView.setOnScrollChangeListener { _: NestedScrollView?, _: Int, scrollY: Int, _: Int, _: Int ->
             val scale: Float =
@@ -125,10 +122,10 @@ class CurrentLocationFragment :
                 adapterToday.submitList(fiveDayForecast.list
                     .filter { DateUtils.isToday(it.dt * 1000) })
                 adapterTomorrow.submitList(fiveDayForecast.list
-                    .filter { Extentions.isTomorrow(it.dt * 1000) })
+                    .filter { Extensions.isTomorrow(it.dt * 1000) })
                 adapterForTheRemaining3Days.submitList(fiveDayForecast.list
                     .filterNot { DateUtils.isToday(it.dt * 1000) }
-                    .filterNot { Extentions.isTomorrow(it.dt * 1000) })
+                    .filterNot { Extensions.isTomorrow(it.dt * 1000) })
             },
             {
                 showErrorDialog(it.message!!)

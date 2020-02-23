@@ -17,7 +17,7 @@ class ListStringTypeConverter {
             return Collections.emptyList()
         }
         val listType: Type =
-            object : TypeToken<List<Location?>?>() {}.getType()
+            object : TypeToken<List<Location?>?>() {}.type
         return gson.fromJson<List<Location?>>(data, listType)
     }
 

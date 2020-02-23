@@ -16,10 +16,14 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import com.example.weatherapp.utils.LoaderDialog
+import com.example.weatherapp.utils.SharedPrefs
+import com.example.weatherapp.utils.UnitOfMeasurement
 import io.reactivex.disposables.CompositeDisposable
 
 abstract class BaseFragment<B : ViewDataBinding, VM : ViewModel>(private var layoutResId: Int) : Fragment() {
 
+    var unitOfMeasurement: UnitOfMeasurement = UnitOfMeasurement.KELVIN
+    lateinit var sharedPrefs: SharedPrefs
     protected lateinit var binding: B
     protected lateinit var viewModel: VM
     protected val disposables: CompositeDisposable = CompositeDisposable()
@@ -31,6 +35,8 @@ abstract class BaseFragment<B : ViewDataBinding, VM : ViewModel>(private var lay
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, layoutResId, container, false)
+        sharedPrefs = SharedPrefs(this.requireContext())
+        unitOfMeasurement = sharedPrefs.getUnitOfMeasurement()
         progressBar = LoaderDialog.buildLoader(this.requireContext())
         return binding.root
     }

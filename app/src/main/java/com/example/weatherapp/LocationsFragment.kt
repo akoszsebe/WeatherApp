@@ -15,7 +15,7 @@ class LocationsFragment : BaseFragment<FragmentLocationsBinding,LocationListView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = LocationAdapter()
+        adapter = LocationAdapter(unitOfMeasurement)
         viewModel = InjectorUtils.provideLocationsListViewModelFactory(this).create(LocationListViewModel::class.java)
         binding.locationsList.adapter = adapter
         binding.locationsListRefresh.setOnRefreshListener {

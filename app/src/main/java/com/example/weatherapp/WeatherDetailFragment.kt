@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.text.format.DateUtils
 import android.view.View
 import androidx.navigation.fragment.navArgs
-import com.example.weatherapp.adapters.Extentions.isTomorrow
+import com.example.weatherapp.utils.Extensions.isTomorrow
 import com.example.weatherapp.adapters.ForecastListAdapter
 import com.example.weatherapp.base.BaseFragment
 import com.example.weatherapp.databinding.FragmentWeatherDetailesBinding
@@ -24,13 +24,14 @@ class WeatherDetailFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapterToday = ForecastListAdapter()
-        adapterTomorrow = ForecastListAdapter()
-        adapterForTheRemaining3Days = ForecastListAdapter()
+        adapterToday = ForecastListAdapter(unitOfMeasurement)
+        adapterTomorrow = ForecastListAdapter(unitOfMeasurement)
+        adapterForTheRemaining3Days = ForecastListAdapter(unitOfMeasurement)
         viewModel = InjectorUtils.provideWeatherDetailsViewModelFactory(this, args.locationId)
             .create(WeatherDetailsViewModel::class.java)
 
         setToolbar(binding.toolbar, true)
+        binding.unitOfMeasurement = unitOfMeasurement
         binding.appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             val scale: Float =
                 ((appBarLayout.totalScrollRange.toFloat() + verticalOffset.toFloat()) / appBarLayout.totalScrollRange.toFloat())

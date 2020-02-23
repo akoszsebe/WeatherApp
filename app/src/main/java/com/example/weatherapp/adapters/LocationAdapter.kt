@@ -10,14 +10,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weatherapp.HomeViewPagerFragmentDirections
 import com.example.weatherapp.data.model.LocationWithWeather
 import com.example.weatherapp.databinding.ListItemWeatherLocationsBinding
+import com.example.weatherapp.utils.UnitOfMeasurement
 
-class LocationAdapter :
+class LocationAdapter(private val unitOfMeasurement: UnitOfMeasurement) :
     ListAdapter<LocationWithWeather, RecyclerView.ViewHolder>(LocationDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return LocationViewHolder(
             ListItemWeatherLocationsBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
-            )
+            ), unitOfMeasurement
         )
     }
 
@@ -28,7 +29,8 @@ class LocationAdapter :
     }
 
     class LocationViewHolder(
-        private val binding: ListItemWeatherLocationsBinding
+        private val binding: ListItemWeatherLocationsBinding,
+        unitOfMeasurement: UnitOfMeasurement
     ) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.itemView.setOnClickListener {
@@ -36,6 +38,7 @@ class LocationAdapter :
                     navigateToLocation(location, it)
                 }
             }
+            binding.unitOfMeasurement = unitOfMeasurement
         }
 
         private fun navigateToLocation(
