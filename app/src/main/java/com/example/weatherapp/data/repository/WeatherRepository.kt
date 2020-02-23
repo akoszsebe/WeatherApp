@@ -14,6 +14,13 @@ class WeatherRepository(
     private val locationWeatherDao: LocationWeatherDao,
     private val connectionHelper: ConnectionHelper
 ) {
+    fun syncAllDate(): Single<Unit> {
+        return Single.create<Unit> { emitter: SingleEmitter<Unit> ->
+            if (connectionHelper.isOnline()) {
+                syncAllData(emitter)
+            }
+        }
+    }
 
     fun getFiveDayForecastForLocationWithId(locationId: Long): Single<FiveDayForecast> {
         return Single.create<FiveDayForecast> { emitter: SingleEmitter<FiveDayForecast> ->
@@ -63,6 +70,26 @@ class WeatherRepository(
     }
 
     //online
+
+    private fun syncAllData(emitter: SingleEmitter<Unit>){
+        try {
+            val locationIds = locationWeatherDao.getAllLocationIds()
+            if (locationIds.isNotEmpty()) {
+                val weathers =
+                    weatherApiService.getWeatherForLocationsWithIds(locationIds.joinToString(","))
+                        .execute()
+                        .body()
+                if (weathers != null) {
+                    locationWeatherDao.deleteAllData()
+                    locationWeatherDao.insertWeatherForLocations(weathers.list)
+                }
+            }
+            emitter.onSuccess(Unit)
+        } catch (e : Exception){
+            emitter.onError(e)
+        }
+    }
+
     private fun loadFiveDayForecastByLocationIdFromNetwork(
         locationId: Long,
         emitter: SingleEmitter<FiveDayForecast>
@@ -145,7 +172,6 @@ class WeatherRepository(
                 weatherApiService.getWeatherForLocationsWithIds(ids.joinToString(",")).execute()
                     .body()
             if (weathers != null) {
-                //locationWeatherDao.deleteAllData()
                 locationWeatherDao.insertWeatherForLocations(weathers.list)
                 emitter.onSuccess(weathers.list)
             } else {
@@ -189,7 +215,7 @@ class WeatherRepository(
             try {
                 locationWeatherDao.insertFavoriteLocation(FavoriteLocation(locationId))
                 emitter.onSuccess(Unit)
-            } catch (e: java.lang.Exception) {
+            } catch (e: Exception) {
                 emitter.onError(e)
             }
 
@@ -201,7 +227,7 @@ class WeatherRepository(
             try {
                 locationWeatherDao.deleteFavoriteLocation(locationId)
                 emitter.onSuccess(Unit)
-            } catch (e: java.lang.Exception) {
+            } catch (e: Exception) {
                 emitter.onError(e)
             }
 
@@ -213,7 +239,7 @@ class WeatherRepository(
             try {
                 val isFavorite = locationWeatherDao.isFavoriteLocation(locationId) != null
                 emitter.onSuccess(isFavorite)
-            } catch (e: java.lang.Exception) {
+            } catch (e: Exception) {
                 emitter.onError(e)
             }
         }

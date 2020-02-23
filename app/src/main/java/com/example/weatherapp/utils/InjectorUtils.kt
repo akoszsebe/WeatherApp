@@ -17,6 +17,15 @@ import retrofit2.converter.gson.GsonConverterFactory
 private const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
 
 object InjectorUtils {
+    fun provideWeatherRepositoryForWeatherSyncJobService(context: Context): WeatherRepository {
+        val connectionHelper = provideConnectionHelper(context)
+        return provideWeatherRepository(
+        provideRetrofit(),
+        provideLocationWeatherDao(context),
+        connectionHelper
+    )
+    }
+
     fun provideSettingsViewModelFactory(): SettingsViewModelFactory {
         return SettingsViewModelFactory()
     }

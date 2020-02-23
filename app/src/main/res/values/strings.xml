@@ -28,6 +28,9 @@
     <string name="main_fragment_title">Weather</string>
     <string name="unit">Unit of Measurement</string>
     <string name="auto_refresh">Auto Refresh</string>
+    <string name="view_source_code">View source code</string>
+    <string name="general">General</string>
+    <string name="met_the_developer">Met the developer</string>
 
     <string-array name="units_array">
         <item>°C (Celsius)</item>

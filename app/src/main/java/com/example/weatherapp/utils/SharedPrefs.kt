@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 
 private const val CURRENT_LOCATION: String = "current_location"
 private const val UNIT_OF_MEASUREMENT: String = "unit_of_measurement"
+private const val AUTO_REFRESH: String = "auto_refresh"
 
 class SharedPrefs(private val context: Context) {
 
@@ -35,6 +36,20 @@ class SharedPrefs(private val context: Context) {
             context.getSharedPreferences(UNIT_OF_MEASUREMENT, MODE_PRIVATE)
         val editor = sharedPref.edit()
         editor.putInt(UNIT_OF_MEASUREMENT, unitOfMeasurement.value)
+        editor.apply()
+    }
+
+    fun getAutoRefresh(): AutoRefresh {
+        val sharedPref: SharedPreferences =
+            context.getSharedPreferences(AUTO_REFRESH, MODE_PRIVATE)
+        return AutoRefresh.valueOf(sharedPref.getInt(AUTO_REFRESH, 0))
+    }
+
+    fun setAutoRefresh(autoRefresh: AutoRefresh) {
+        val sharedPref: SharedPreferences =
+            context.getSharedPreferences(AUTO_REFRESH, MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putInt(AUTO_REFRESH, autoRefresh.ordinal)
         editor.apply()
     }
 
