@@ -16,7 +16,6 @@ private const val DATABASE_NAME = "db-name"
         (LocationWeatherCrossRef::class),
         (FavoriteLocation::class),
         (FiveDayForecastDb::class),
-        (FiveDayForecastListElementCrossRef::class),
         (WeatherListElement::class)
     ],
     version = 1,

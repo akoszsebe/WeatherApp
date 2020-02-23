@@ -30,19 +30,18 @@ abstract class LocationWeatherDao {
     fun insertFiveDayForecast(fiveDayForecast: FiveDayForecast) {
         val fiveDayForecastDb = FiveDayForecastDb(fiveDayForecast)
         insertFiveDayForecastDb(fiveDayForecastDb)
-        val insertedWeatherListElements = insertWeatherListElementList(fiveDayForecast.list)
-        for (weatherListElement in insertedWeatherListElements) {
-            insertFiveDayForecastListElementCrossRef(
-                FiveDayForecastListElementCrossRef(
-                    fiveDayForecastDb.city.id,
-                    weatherListElement
-                )
-            )
+        deleteWeatherListElement(fiveDayForecastDb.id)
+        for (weatherListElement in fiveDayForecast.list) {
+            weatherListElement.fiveDayForecastId = fiveDayForecastDb.id
         }
-
+        val insertedWeatherListElements = insertWeatherListElementList(fiveDayForecast.list)
         val t = getAllFiveDayForecast()
         println(t)
     }
+
+    @Transaction
+    @Query("SELECT * FROM fivedayforecastdb WHERE fiveDayForecastId=:locationId")
+    abstract fun getFiveDayForecastByLocationId(locationId: Long): FiveDayForecast?
 
     @Transaction
     @Query("SELECT * FROM fivedayforecastdb")
@@ -88,9 +87,6 @@ abstract class LocationWeatherDao {
     abstract fun insertFiveDayForecastDb(fiveDayForecastDb: FiveDayForecastDb)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insertFiveDayForecastListElementCrossRef(fiveDayForecastListElementCrossRef: FiveDayForecastListElementCrossRef)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertWeatherListElementList(list: List<WeatherListElement>): List<Long>
 
     @Query("DELETE FROM location")
@@ -104,4 +100,7 @@ abstract class LocationWeatherDao {
 
     @Query("DELETE FROM favoritelocation WHERE locationId=:locationId")
     abstract fun deleteFavoriteLocation(locationId: Long)
+
+    @Query("DELETE FROM weatherlistelement WHERE fiveDayForecastId=:fiveDayForecastId")
+    abstract fun deleteWeatherListElement(fiveDayForecastId: Long)
 }

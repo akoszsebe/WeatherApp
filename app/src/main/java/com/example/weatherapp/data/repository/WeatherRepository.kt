@@ -26,6 +26,8 @@ class WeatherRepository(
         return Single.create<FiveDayForecast> { emitter: SingleEmitter<FiveDayForecast> ->
             if (connectionHelper.isOnline()) {
                 loadFiveDayForecastByLocationIdFromNetwork(locationId, emitter)
+            } else {
+                loadFiveDayForecastByLocationIdFromDb(locationId, emitter)
             }
         }
     }
@@ -187,6 +189,15 @@ class WeatherRepository(
     }
 
     //offline
+    private fun loadFiveDayForecastByLocationIdFromDb(locationId: Long, emitter: SingleEmitter<FiveDayForecast>) {
+        val locations = locationWeatherDao.getFiveDayForecastByLocationId(locationId)
+        if (locations != null) {
+            emitter.onSuccess(locations)
+        } else {
+            emitter.onError(Exception("Device is offline"))
+        }
+    }
+
 
     private fun loadWeatherForFavoriteLocationsFromDb(emitter: SingleEmitter<List<LocationWithWeather>>) {
         val locations = locationWeatherDao.getFavoriteLocations()

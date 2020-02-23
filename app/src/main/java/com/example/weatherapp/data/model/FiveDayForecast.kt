@@ -4,22 +4,23 @@ import androidx.room.*
 import com.google.gson.annotations.SerializedName
 
 data class FiveDayForecast(
-    @SerializedName("list")
-    @Relation(
-        parentColumn = "locationId",
-        entityColumn = "listElementId",
-        associateBy = Junction(FiveDayForecastListElementCrossRef::class)
-    )
-    var list: List<WeatherListElement>,
     @Embedded
     var city: City,
-    @ColumnInfo(name = "locationId")
+    @SerializedName("list")
+    @Relation(
+        parentColumn = "fiveDayForecastId",
+        entityColumn = "fiveDayForecastId"
+    )
+    var list: List<WeatherListElement>,
+    @ColumnInfo(name = "fiveDayForecastId")
     var id: Long
-)
+) {
+    constructor() : this(City(), listOf<WeatherListElement>(), 0)
+}
 
 @Entity
 data class FiveDayForecastDb(
-    @PrimaryKey @ColumnInfo(name = "locationId")
+    @PrimaryKey @ColumnInfo(name = "fiveDayForecastId")
     var id: Long,
     @Embedded
     var city: City
@@ -33,12 +34,6 @@ data class FiveDayForecastDb(
             )
 }
 
-@Entity(primaryKeys = ["locationId", "listElementId"])
-class FiveDayForecastListElementCrossRef(
-    var locationId: Long = 0,
-    var listElementId: Long = 0
-)
-
 data class City(
     var id: Long,
     var name: String,
@@ -50,12 +45,16 @@ data class City(
 
 @Entity
 data class WeatherListElement(
-    @ColumnInfo(name = "listElementId") @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "weatherListElementId") @PrimaryKey(autoGenerate = true)
     var id: Long,
+    @ColumnInfo(name = "fiveDayForecastId")
+    var fiveDayForecastId: Long,
     var dt: Long,
     @Embedded
     var main: MainInfo,
     @Ignore var weather: List<Weather>
-){
-    constructor(): this(0,-1, MainInfo(), listOf<Weather>())
+) {
+    constructor() : this(0, -1, -1, MainInfo(), listOf<Weather>())
 }
+
+
