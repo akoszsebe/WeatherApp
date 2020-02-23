@@ -11,7 +11,7 @@
         type="android.view.View.OnClickListener"/>
     <variable
         name="location"
-        type="com.example.weatherapp.data.model.ListElement"/>
+        type="com.example.weatherapp.data.model.WeatherListElement"/>
     <variable
         name="hasDivider"
         type="boolean" />

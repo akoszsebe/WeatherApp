@@ -98,7 +98,7 @@ class WeatherRepository(
             val fiveDayForecast =
                 weatherApiService.getFiveDayForecastForLocationWithId(locationId).execute().body()
             if (fiveDayForecast != null) {
-                //locationWeatherDao.insertWeatherForLocation(weather)
+                locationWeatherDao.insertFiveDayForecast(fiveDayForecast)
                 emitter.onSuccess(fiveDayForecast)
             } else {
                 emitter.onError(Exception("No data received"))
@@ -168,14 +168,18 @@ class WeatherRepository(
         emitter: SingleEmitter<List<LocationWithWeather>>
     ) {
         try {
-            val weathers =
-                weatherApiService.getWeatherForLocationsWithIds(ids.joinToString(",")).execute()
-                    .body()
-            if (weathers != null) {
-                locationWeatherDao.insertWeatherForLocations(weathers.list)
-                emitter.onSuccess(weathers.list)
+            if (ids.isNullOrEmpty()){
+                emitter.onSuccess(listOf())
             } else {
-                emitter.onError(Exception("No data received"))
+                val weathers =
+                    weatherApiService.getWeatherForLocationsWithIds(ids.joinToString(",")).execute()
+                        .body()
+                if (weathers != null) {
+                    locationWeatherDao.insertWeatherForLocations(weathers.list)
+                    emitter.onSuccess(weathers.list)
+                } else {
+                    emitter.onError(Exception("No data received"))
+                }
             }
         } catch (exception: Exception) {
             emitter.onError(exception)

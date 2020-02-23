@@ -5,12 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.weatherapp.data.model.ListElement
+import com.example.weatherapp.data.model.WeatherListElement
 import com.example.weatherapp.databinding.ListItemWeatherLocationsforcastBinding
 import com.example.weatherapp.utils.UnitOfMeasurement
 
 class ForecastListAdapter(private val unitOfMeasurement: UnitOfMeasurement) :
-    ListAdapter<ListElement, RecyclerView.ViewHolder>(ForecastDiffCallback()) {
+    ListAdapter<WeatherListElement, RecyclerView.ViewHolder>(ForecastDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ForecastViewHolder(
@@ -32,7 +32,7 @@ class ForecastListAdapter(private val unitOfMeasurement: UnitOfMeasurement) :
         init {
             binding.unitOfMeasurement = unitOfMeasurement
         }
-        fun bind(item: ListElement) {
+        fun bind(item: WeatherListElement) {
             binding.apply {
                 location = item
                 executePendingBindings()
@@ -41,18 +41,18 @@ class ForecastListAdapter(private val unitOfMeasurement: UnitOfMeasurement) :
     }
 }
 
-private class ForecastDiffCallback : DiffUtil.ItemCallback<ListElement>() {
+private class ForecastDiffCallback : DiffUtil.ItemCallback<WeatherListElement>() {
 
     override fun areItemsTheSame(
-        oldItem: ListElement,
-        newItem: ListElement
+        oldItem: WeatherListElement,
+        newItem: WeatherListElement
     ): Boolean {
         return oldItem.dt == newItem.dt
     }
 
     override fun areContentsTheSame(
-        oldItem: ListElement,
-        newItem: ListElement
+        oldItem: WeatherListElement,
+        newItem: WeatherListElement
     ): Boolean {
         return oldItem == newItem
     }

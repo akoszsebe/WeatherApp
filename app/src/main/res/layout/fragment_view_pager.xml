@@ -91,7 +91,7 @@
                 app:tabIndicatorColor="@color/weather_white"
                 app:tabIndicatorFullWidth="false"
                 app:tabIndicatorGravity="bottom"
-                app:tabIndicatorHeight="4dp"
+                app:tabIndicatorHeight="3dp"
                 app:tabMode="scrollable"
                 app:tabPaddingEnd="16dp"
                 app:tabRippleColor="@null"

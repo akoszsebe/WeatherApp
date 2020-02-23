@@ -27,6 +27,26 @@ abstract class LocationWeatherDao {
         insertWeatherList(locationWithWeather.weather)
     }
 
+    fun insertFiveDayForecast(fiveDayForecast: FiveDayForecast) {
+        val fiveDayForecastDb = FiveDayForecastDb(fiveDayForecast)
+        insertFiveDayForecastDb(fiveDayForecastDb)
+        val insertedWeatherListElements = insertWeatherListElementList(fiveDayForecast.list)
+        for (weatherListElement in insertedWeatherListElements) {
+            insertFiveDayForecastListElementCrossRef(
+                FiveDayForecastListElementCrossRef(
+                    fiveDayForecastDb.city.id,
+                    weatherListElement
+                )
+            )
+        }
+
+        val t = getAllFiveDayForecast()
+        println(t)
+    }
+
+    @Transaction
+    @Query("SELECT * FROM fivedayforecastdb")
+    abstract fun getAllFiveDayForecast(): List<FiveDayForecast>
 
     @Transaction
     @Query("SELECT * FROM location , favoritelocation WHERE location.locationId = favoritelocation.locationId")
@@ -42,7 +62,7 @@ abstract class LocationWeatherDao {
 
     @Transaction
     @Query("SELECT * FROM location WHERE locationId=:locationId")
-    abstract fun getLocationById(locationId : Long): LocationWithWeather
+    abstract fun getLocationById(locationId: Long): LocationWithWeather
 
     @Transaction
     @Query("SELECT * FROM favoritelocation")
@@ -63,6 +83,15 @@ abstract class LocationWeatherDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertWeatherList(weather: List<Weather>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertFiveDayForecastDb(fiveDayForecastDb: FiveDayForecastDb)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertFiveDayForecastListElementCrossRef(fiveDayForecastListElementCrossRef: FiveDayForecastListElementCrossRef)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertWeatherListElementList(list: List<WeatherListElement>): List<Long>
 
     @Query("DELETE FROM location")
     abstract fun deleteLocationData()
