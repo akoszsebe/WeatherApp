@@ -1,6 +1,7 @@
 package com.example.weatherapp.utils
 
 import android.content.Context
+import android.location.Geocoder
 import androidx.fragment.app.Fragment
 import com.example.weatherapp.Application
 import com.example.weatherapp.data.persistance.AppDatabase
@@ -18,6 +19,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 private const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
@@ -50,7 +52,9 @@ object InjectorUtils {
             provideLocationWeatherDao(fragment.requireContext()),
             connectionHelper
         )
-        return LocationSearchViewModelFactory(repository, connectionHelper)
+        val locationHelper = provideLocationHelper()
+        val geocoder = provideGeoDecoder(fragment.requireContext())
+        return LocationSearchViewModelFactory(repository, connectionHelper,locationHelper,geocoder)
     }
 
     fun provideWeatherDetailsViewModelFactory(
@@ -85,7 +89,8 @@ object InjectorUtils {
             provideLocationWeatherDao(fragment.requireContext()),
             provideConnectionHelper(fragment.requireContext())
         )
-        return CurrentLocationViewModelFactory(repository)
+        val locationHelper = provideLocationHelper()
+        return CurrentLocationViewModelFactory(repository,locationHelper)
     }
 
     fun provideConnectionHelper(context: Context): ConnectionHelper = connectionHelper
@@ -100,7 +105,6 @@ object InjectorUtils {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
         return cache
     }
 
@@ -153,5 +157,9 @@ object InjectorUtils {
         locationWeatherDao,
         connectionHelper
     )
+
+    private fun provideLocationHelper(): LocationHelper = LocationHelper()
+
+    private fun provideGeoDecoder(context: Context): Geocoder = Geocoder(context, Locale.ENGLISH)
 
 }

@@ -28,7 +28,8 @@
             android:background="@drawable/darkgray_rounded_backgound"
             android:clickable="true"
             android:focusable="true"
-            app:isGone="@{!hasLocations}" />
+            app:isGone="@{!hasLocations}"
+            app:queryBackground="@android:color/transparent"/>
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/locations_list_refresh"

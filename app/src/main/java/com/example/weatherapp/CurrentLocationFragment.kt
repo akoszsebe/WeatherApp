@@ -21,7 +21,6 @@ import com.google.android.gms.location.LocationResult
 class CurrentLocationFragment :
     BaseFragment<FragmentCurrentLocationBinding, CurrentLocationViewModel>(R.layout.fragment_current_location) {
 
-    private lateinit var locationHelper: LocationHelper
     private lateinit var adapterToday: ForecastListAdapter
     private lateinit var adapterTomorrow: ForecastListAdapter
     private lateinit var adapterForTheRemaining3Days: ForecastListAdapter
@@ -30,7 +29,6 @@ class CurrentLocationFragment :
         adapterToday = ForecastListAdapter(unitOfMeasurement)
         adapterTomorrow = ForecastListAdapter(unitOfMeasurement)
         adapterForTheRemaining3Days = ForecastListAdapter(unitOfMeasurement)
-        locationHelper = LocationHelper()
         viewModel = InjectorUtils.provideCurrentLocationViewModelFactory(this)
             .create(CurrentLocationViewModel::class.java)
         binding.unitOfMeasurement = unitOfMeasurement
@@ -77,14 +75,14 @@ class CurrentLocationFragment :
             }
         }
         binding.buttonGps.setOnClickListener {
-            if (locationHelper.checkPermissionForLocation(this.requireActivity())) {
+            if (viewModel.locationHelper.checkPermissionForLocation(this.requireActivity())) {
                 val locationManager =
                     this.requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
                 if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     showDialogNoGps()
                 } else {
                     showLoader()
-                    locationHelper.startLocationUpdates(this.requireContext(), locationCallback)
+                    viewModel.locationHelper.startLocationUpdates(this.requireContext(), locationCallback)
                 }
             }
         }
@@ -95,8 +93,6 @@ class CurrentLocationFragment :
         viewModel.locationId = sharedPrefs.getCurrentLocation()
         if (viewModel.locationId != 0L) {
             subscribeUi(online)
-        } else {
-
         }
     }
 
@@ -145,7 +141,7 @@ class CurrentLocationFragment :
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             if (locationResult.lastLocation != null) {
-                locationHelper.stopLocationUpdates(this)
+                viewModel.locationHelper.stopLocationUpdates(this)
                 disposables.add(
                     viewModel.getCurrentLocationWeather(
                         locationResult.lastLocation.latitude,

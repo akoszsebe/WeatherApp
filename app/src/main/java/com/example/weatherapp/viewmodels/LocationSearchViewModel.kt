@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.weatherapp.data.model.LocationWithWeather
 import com.example.weatherapp.data.repository.WeatherRepository
 import com.example.weatherapp.utils.ConnectionHelper
+import com.example.weatherapp.utils.LocationHelper
 import io.reactivex.Single
 import io.reactivex.SingleEmitter
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -14,8 +15,11 @@ import java.io.IOException
 
 class LocationSearchViewModel internal constructor(
     private val weatherRepository: WeatherRepository,
-    val connectionHelper: ConnectionHelper
+    val connectionHelper: ConnectionHelper,
+    val locationHelper: LocationHelper,
+    val geocoder: Geocoder
 ) : ViewModel() {
+
     var locationList: MutableList<Address> = mutableListOf()
     var locationNameList: MutableList<String> = mutableListOf()
 
@@ -36,7 +40,6 @@ class LocationSearchViewModel internal constructor(
     }
 
     fun getFromLocationName(
-        geocoder: Geocoder,
         location: String
     ): Single<MutableList<Address>> {
         return Single.create { emitter: SingleEmitter<MutableList<Address>> ->

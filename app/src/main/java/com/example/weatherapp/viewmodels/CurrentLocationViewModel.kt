@@ -4,12 +4,14 @@ import androidx.lifecycle.ViewModel
 import com.example.weatherapp.data.model.FiveDayForecast
 import com.example.weatherapp.data.model.LocationWithWeather
 import com.example.weatherapp.data.repository.WeatherRepository
+import com.example.weatherapp.utils.LocationHelper
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 class CurrentLocationViewModel internal constructor(
-    private val weatherRepository: WeatherRepository
+    private val weatherRepository: WeatherRepository,
+    val locationHelper: LocationHelper
 ) : ViewModel() {
 
     var locationId: Long = 675937

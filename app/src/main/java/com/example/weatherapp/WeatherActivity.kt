@@ -38,6 +38,13 @@ class WeatherActivity : AppCompatActivity() {
         connectionHelper = InjectorUtils.provideConnectionHelper(this.applicationContext)
     }
 
+    override fun onDestroy (){
+        super.onDestroy()
+        if (networkStateChangedDispose?.isDisposed != true){
+            networkStateChangedDispose?.dispose()
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         networkStateChangedDispose = naiveObserveNetworkStateChanged(
@@ -52,11 +59,6 @@ class WeatherActivity : AppCompatActivity() {
                     else -> textViewOffline?.visibility = View.VISIBLE
                 }
             }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        networkStateChangedDispose?.dispose()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -74,12 +76,10 @@ class WeatherActivity : AppCompatActivity() {
             val networkCallback: NetworkCallback = object : NetworkCallback() {
                 override fun onAvailable(network: Network) {
                     emitter.onNext(NetworkState.ONLINE)
-                    emitter.onComplete()
                 }
 
                 override fun onLost(network: Network) {
                     emitter.onNext(NetworkState.OFFLINE)
-                    emitter.onComplete()
                 }
             }
             emitter.setCancellable {
@@ -96,7 +96,6 @@ class WeatherActivity : AppCompatActivity() {
                     .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build()
                 connectivityManager.registerNetworkCallback(request, networkCallback)
             }
-            emitter.onComplete()
         }
     }
 }

@@ -20,5 +20,6 @@
     <dimen name="margin_large_medium">52dp</dimen>
     <dimen name="margin_extra_large">64dp</dimen>
     <dimen name="margin_super_large">96dp</dimen>
+    <dimen name="margin_zero">0dp</dimen>
 
 </resources>

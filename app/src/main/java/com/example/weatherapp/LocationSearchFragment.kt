@@ -1,7 +1,6 @@
 package com.example.weatherapp
 
 import android.content.Context
-import android.location.Geocoder
 import android.location.LocationManager
 import android.os.Bundle
 import android.text.Editable
@@ -12,17 +11,13 @@ import androidx.navigation.findNavController
 import com.example.weatherapp.base.BaseFragment
 import com.example.weatherapp.databinding.FragmentLocationSearchBinding
 import com.example.weatherapp.utils.InjectorUtils
-import com.example.weatherapp.utils.LocationHelper
 import com.example.weatherapp.viewmodels.LocationSearchViewModel
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
-import java.util.*
 
 class LocationSearchFragment :
     BaseFragment<FragmentLocationSearchBinding, LocationSearchViewModel>(R.layout.fragment_location_search) {
 
-    private lateinit var locationHelper: LocationHelper
-    private lateinit var geocoder: Geocoder
     private lateinit var adapter: ArrayAdapter<String>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -33,7 +28,6 @@ class LocationSearchFragment :
         if (!viewModel.connectionHelper.isOnline()) {
             showErrorDialog("This page is working only in online mode")
         }
-
         binding.unitOfMeasurement = unitOfMeasurement
         setToolbar(binding.toolbar, true)
         adapter = ArrayAdapter(
@@ -41,22 +35,23 @@ class LocationSearchFragment :
             R.layout.simple_spinner_item, viewModel.locationNameList
         )
         binding.listviewResults.adapter = adapter
-        geocoder = Geocoder(this.requireContext(), Locale.ENGLISH)
         binding.searhEditext.addTextChangedListener(textWatcher)
         binding.listviewResults.setOnItemClickListener { _, _, position, _ ->
             setLocationName(viewModel.locationNameList[position])
             binding.hasLocationSuggestions = false
         }
-        locationHelper = LocationHelper()
         binding.buttonGps.setOnClickListener {
-            if (locationHelper.checkPermissionForLocation(this.requireActivity())) {
+            if (viewModel.locationHelper.checkPermissionForLocation(this.requireActivity())) {
                 val locationManager =
                     this.requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
                 if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     showDialogNoGps()
                 } else {
                     showLoader()
-                    locationHelper.startLocationUpdates(this.requireContext(), locationCallback)
+                    viewModel.locationHelper.startLocationUpdates(
+                        this.requireContext(),
+                        locationCallback
+                    )
                 }
             }
         }
@@ -96,7 +91,7 @@ class LocationSearchFragment :
 
     override fun onDestroy() {
         super.onDestroy()
-        locationHelper.stopLocationUpdates(locationCallback)
+        viewModel.locationHelper.stopLocationUpdates(locationCallback)
     }
 
     private fun setLocationName(text: String) {
@@ -110,14 +105,14 @@ class LocationSearchFragment :
     private val locationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             if (locationResult.lastLocation != null) {
-                val result = geocoder.getFromLocation(
+                val result = viewModel.geocoder.getFromLocation(
                     locationResult.lastLocation.latitude,
                     locationResult.lastLocation.longitude,
                     1
                 )
                 setLocationName(result[0].locality)
                 hideLoader()
-                locationHelper.stopLocationUpdates(this)
+                viewModel.locationHelper.stopLocationUpdates(this)
             }
         }
     }
@@ -145,7 +140,6 @@ class LocationSearchFragment :
         if (!it.isNullOrEmpty()) {
             disposables.add(
                 viewModel.getFromLocationName(
-                    geocoder,
                     it.toString()
                 ).subscribe({ locationList ->
                     binding.hasLocationSuggestions = false
