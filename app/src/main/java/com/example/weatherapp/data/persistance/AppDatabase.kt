@@ -21,7 +21,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun locationWeatherDao(): LocationWeatherDao
 
     companion object {
-
+        var TEST_MODE = false
         // For Singleton instantiation
         @Volatile
         private var instance: AppDatabase? = null
@@ -33,6 +33,9 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         private fun buildDatabase(context: Context): AppDatabase {
+            if (TEST_MODE) {
+                return Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).allowMainThreadQueries().build()
+            }
             return Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME).build()
         }
     }
