@@ -103,6 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_small"
             android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginStart="@dimen/margin_small"
             app:setTemperatureUnit="@{unitOfMeasurement}"
             app:setTextUnitConverted="@{location.main.feelsLike}"
             android:textColor="@color/weather_gray_200"

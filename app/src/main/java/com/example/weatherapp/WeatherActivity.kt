@@ -74,10 +74,12 @@ class WeatherActivity : AppCompatActivity() {
             val networkCallback: NetworkCallback = object : NetworkCallback() {
                 override fun onAvailable(network: Network) {
                     emitter.onNext(NetworkState.ONLINE)
+                    emitter.onComplete()
                 }
 
                 override fun onLost(network: Network) {
                     emitter.onNext(NetworkState.OFFLINE)
+                    emitter.onComplete()
                 }
             }
             emitter.setCancellable {
@@ -94,6 +96,7 @@ class WeatherActivity : AppCompatActivity() {
                     .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build()
                 connectivityManager.registerNetworkCallback(request, networkCallback)
             }
+            emitter.onComplete()
         }
     }
 }
