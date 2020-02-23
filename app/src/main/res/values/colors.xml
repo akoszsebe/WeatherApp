@@ -4,8 +4,6 @@
     <color name="weather_gray_50">#eceff1</color>
     <color name="weather_gray_200">#b0bec5</color>
     <color name="weather_gray_300">#90a4ae</color>
-    <color name="weather_gray_500">#607d8b</color>
-    <color name="weather_gray_800">#37474f</color>
     <color name="weather_gray_900">#1b1b1b</color>
     <color name="weather_white">#deffffff</color>
     <color name="weather_white_50">#80ffffff</color>
