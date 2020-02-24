@@ -2,6 +2,7 @@ package com.example.weatherapp.data.persistance.dao
 
 import androidx.room.*
 import com.example.weatherapp.data.model.*
+import com.example.weatherapp.data.persistance.typeconverter.Converter
 
 @Dao
 abstract class LocationWeatherDao {
@@ -16,6 +17,8 @@ abstract class LocationWeatherDao {
         deleteLocationWeatherCrossRefData()
         deleteWeatherData()
         deleteLocationData()
+        deleteAllWeatherListElements()
+        deleteAllFiveDayForcasts()
     }
 
     fun insertWeatherForLocation(locationWithWeather: LocationWithWeather) {
@@ -34,26 +37,22 @@ abstract class LocationWeatherDao {
         for (weatherListElement in fiveDayForecast.list) {
             weatherListElement.fiveDayForecastId = fiveDayForecastDb.id
         }
-        val insertedWeatherListElements = insertWeatherListElementList(fiveDayForecast.list)
-        val t = getAllFiveDayForecast()
-        println(t)
+        insertWeatherListElementList(fiveDayForecast.list)
     }
 
     @Transaction
+    @TypeConverters(Converter::class)
     @Query("SELECT * FROM fivedayforecastdb WHERE fiveDayForecastId=:locationId")
     abstract fun getFiveDayForecastByLocationId(locationId: Long): FiveDayForecast?
 
     @Transaction
     @Query("SELECT * FROM fivedayforecastdb")
+    @TypeConverters(Converter::class)
     abstract fun getAllFiveDayForecast(): List<FiveDayForecast>
 
     @Transaction
     @Query("SELECT * FROM location , favoritelocation WHERE location.locationId = favoritelocation.locationId")
     abstract fun getFavoriteLocations(): List<LocationWithWeather>
-
-    @Transaction
-    @Query("SELECT * FROM location")
-    abstract fun getAllLocation(): List<LocationWithWeather>
 
     @Transaction
     @Query("SELECT locationId FROM location")
@@ -83,11 +82,13 @@ abstract class LocationWeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertWeatherList(weather: List<Weather>)
 
+    @TypeConverters(Converter::class)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertFiveDayForecastDb(fiveDayForecastDb: FiveDayForecastDb)
 
+    @TypeConverters(Converter::class)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insertWeatherListElementList(list: List<WeatherListElement>): List<Long>
+    abstract fun insertWeatherListElementList(list: List<WeatherListElement>)
 
     @Query("DELETE FROM location")
     abstract fun deleteLocationData()
@@ -100,6 +101,12 @@ abstract class LocationWeatherDao {
 
     @Query("DELETE FROM favoritelocation WHERE locationId=:locationId")
     abstract fun deleteFavoriteLocation(locationId: Long)
+
+    @Query("DELETE FROM fivedayforecastdb")
+    abstract fun deleteAllFiveDayForcasts()
+
+    @Query("DELETE FROM weatherlistelement")
+    abstract fun deleteAllWeatherListElements()
 
     @Query("DELETE FROM weatherlistelement WHERE fiveDayForecastId=:fiveDayForecastId")
     abstract fun deleteWeatherListElement(fiveDayForecastId: Long)

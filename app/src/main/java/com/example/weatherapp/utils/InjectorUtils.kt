@@ -7,6 +7,8 @@ import com.example.weatherapp.Application
 import com.example.weatherapp.data.persistance.AppDatabase
 import com.example.weatherapp.data.persistance.dao.LocationWeatherDao
 import com.example.weatherapp.data.repository.WeatherRepository
+import com.example.weatherapp.data.repository.loader.OfflineDataLoader
+import com.example.weatherapp.data.repository.loader.OnlineDataLoader
 import com.example.weatherapp.networking.api.WeatherApiService
 import com.example.weatherapp.viewmodels.*
 import com.google.gson.Gson
@@ -31,13 +33,22 @@ object InjectorUtils {
     private var connectionHelper: ConnectionHelper? = null
     private var locationWeatherDao: LocationWeatherDao? = null
     private var weatherRepository: WeatherRepository? = null
+    private var offlineDataLoader: OfflineDataLoader? = null
+    private var onlineDataLoader: OnlineDataLoader? = null
+    private var weatherApiService: WeatherApiService? = null
 
     fun provideWeatherRepositoryForWeatherSyncJobService(context: Context): WeatherRepository {
         val connectionHelper = provideConnectionHelper(context)
+        val locationWeatherDao = provideLocationWeatherDao(context)
+        val onlineDataLoader = provideOnlineDataLoader(
+            provideWeatherApiService(),
+            locationWeatherDao
+        )
+        val offlineDataLoader = provideOfflineDataLoader(locationWeatherDao)
         return provideWeatherRepository(
-            provideRetrofit(),
-            provideLocationWeatherDao(context),
-            connectionHelper
+            connectionHelper,
+            onlineDataLoader,
+            offlineDataLoader
         )
     }
 
@@ -47,24 +58,42 @@ object InjectorUtils {
 
     fun provideLocationSearchViewModelFactory(fragment: Fragment): LocationSearchViewModelFactory {
         val connectionHelper = provideConnectionHelper(fragment.requireContext())
+        val locationWeatherDao = provideLocationWeatherDao(fragment.requireContext())
+        val onlineDataLoader = provideOnlineDataLoader(
+            provideWeatherApiService(),
+            locationWeatherDao
+        )
+        val offlineDataLoader = provideOfflineDataLoader(locationWeatherDao)
         val repository = provideWeatherRepository(
-            provideRetrofit(),
-            provideLocationWeatherDao(fragment.requireContext()),
-            connectionHelper
+            connectionHelper,
+            onlineDataLoader,
+            offlineDataLoader
         )
         val locationHelper = provideLocationHelper()
         val geocoder = provideGeoDecoder(fragment.requireContext())
-        return LocationSearchViewModelFactory(repository, connectionHelper,locationHelper,geocoder)
+        return LocationSearchViewModelFactory(
+            repository,
+            connectionHelper,
+            locationHelper,
+            geocoder
+        )
     }
 
     fun provideWeatherDetailsViewModelFactory(
         fragment: Fragment,
         locationId: Long
     ): WeatherDetailsViewModelFactory {
+        val connectionHelper = provideConnectionHelper(fragment.requireContext())
+        val locationWeatherDao = provideLocationWeatherDao(fragment.requireContext())
+        val onlineDataLoader = provideOnlineDataLoader(
+            provideWeatherApiService(),
+            locationWeatherDao
+        )
+        val offlineDataLoader = provideOfflineDataLoader(locationWeatherDao)
         val repository = provideWeatherRepository(
-            provideRetrofit(),
-            provideLocationWeatherDao(fragment.requireContext()),
-            provideConnectionHelper(fragment.requireContext())
+            connectionHelper,
+            onlineDataLoader,
+            offlineDataLoader
         )
         return WeatherDetailsViewModelFactory(repository, locationId)
     }
@@ -75,22 +104,36 @@ object InjectorUtils {
 
 
     fun provideLocationsListViewModelFactory(fragment: Fragment): LocationListViewModelFactory {
+        val connectionHelper = provideConnectionHelper(fragment.requireContext())
+        val locationWeatherDao = provideLocationWeatherDao(fragment.requireContext())
+        val onlineDataLoader = provideOnlineDataLoader(
+            provideWeatherApiService(),
+            locationWeatherDao
+        )
+        val offlineDataLoader = provideOfflineDataLoader(locationWeatherDao)
         val repository = provideWeatherRepository(
-            provideRetrofit(),
-            provideLocationWeatherDao(fragment.requireContext()),
-            provideConnectionHelper(fragment.requireContext())
+            connectionHelper,
+            onlineDataLoader,
+            offlineDataLoader
         )
         return LocationListViewModelFactory(repository)
     }
 
     fun provideCurrentLocationViewModelFactory(fragment: Fragment): CurrentLocationViewModelFactory {
+        val connectionHelper = provideConnectionHelper(fragment.requireContext())
+        val locationWeatherDao = provideLocationWeatherDao(fragment.requireContext())
+        val onlineDataLoader = provideOnlineDataLoader(
+            provideWeatherApiService(),
+            locationWeatherDao
+        )
+        val offlineDataLoader = provideOfflineDataLoader(locationWeatherDao)
         val repository = provideWeatherRepository(
-            provideRetrofit(),
-            provideLocationWeatherDao(fragment.requireContext()),
-            provideConnectionHelper(fragment.requireContext())
+            connectionHelper,
+            onlineDataLoader,
+            offlineDataLoader
         )
         val locationHelper = provideLocationHelper()
-        return CurrentLocationViewModelFactory(repository,locationHelper)
+        return CurrentLocationViewModelFactory(repository, locationHelper)
     }
 
     fun provideConnectionHelper(context: Context): ConnectionHelper = connectionHelper
@@ -149,17 +192,33 @@ object InjectorUtils {
         }
 
     private fun provideWeatherRepository(
-        retrofit: Retrofit,
-        locationWeatherDao: LocationWeatherDao,
-        connectionHelper: ConnectionHelper
+        connectionHelper: ConnectionHelper,
+        onlineDataLoader: OnlineDataLoader,
+        offlineDataLoader: OfflineDataLoader
     ): WeatherRepository = weatherRepository ?: WeatherRepository(
-        retrofit.create(WeatherApiService::class.java),
-        locationWeatherDao,
-        connectionHelper
+        connectionHelper,
+        onlineDataLoader,
+        offlineDataLoader
     )
 
     private fun provideLocationHelper(): LocationHelper = LocationHelper()
 
     private fun provideGeoDecoder(context: Context): Geocoder = Geocoder(context, Locale.ENGLISH)
 
+    private fun provideOnlineDataLoader(
+        weatherApiService: WeatherApiService,
+        locationWeatherDao: LocationWeatherDao
+    ) = onlineDataLoader ?: OnlineDataLoader(
+        weatherApiService,
+        locationWeatherDao
+    ).apply { onlineDataLoader = this }
+
+    private fun provideOfflineDataLoader(
+        locationWeatherDao: LocationWeatherDao
+    ) = offlineDataLoader ?: OfflineDataLoader(locationWeatherDao).apply {
+        offlineDataLoader = this
+    }
+
+    private fun provideWeatherApiService(): WeatherApiService =
+        weatherApiService ?: provideRetrofit().create(WeatherApiService::class.java)
 }

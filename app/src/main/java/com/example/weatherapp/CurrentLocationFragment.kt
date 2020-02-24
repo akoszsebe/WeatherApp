@@ -16,6 +16,9 @@ import com.example.weatherapp.utils.LocationHelper
 import com.example.weatherapp.viewmodels.CurrentLocationViewModel
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
+import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 
 
 class CurrentLocationFragment :
@@ -91,7 +94,7 @@ class CurrentLocationFragment :
 
     private fun checkCurrentLocation(online: Boolean) {
         viewModel.locationId = sharedPrefs.getCurrentLocation()
-        if (viewModel.locationId != 0L) {
+        if (viewModel.locationId != -1L) {
             subscribeUi(online)
         }
     }
@@ -124,7 +127,9 @@ class CurrentLocationFragment :
                     .filterNot { Extensions.isTomorrow(it.dt * 1000) })
             },
             {
-                showErrorDialog(it.message!!)
+                adapterToday.submitList(listOf())
+                adapterTomorrow.submitList(listOf())
+                adapterForTheRemaining3Days.submitList(listOf())
             }
         ))
         disposables.add(
@@ -149,6 +154,7 @@ class CurrentLocationFragment :
                     ).subscribe(
                         {
                             sharedPrefs.setCurrentLocation(it.id)
+                            viewModel.locationId = it.id
                             hideLoader()
                             subscribeUi(false)
                         },

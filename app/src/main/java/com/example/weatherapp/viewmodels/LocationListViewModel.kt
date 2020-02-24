@@ -22,17 +22,6 @@ class LocationListViewModel internal constructor(
             .observeOn(AndroidSchedulers.mainThread())
     }
 
-
-    fun getALLLocationsWeather(): Single<List<LocationWithWeather>> {
-        return weatherRepository.getWeatherForLocations(
-            listOf(524901, 2643743, 681290)
-        ).doOnSuccess {
-            list = it
-        }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-    }
-
     fun filter(text: String): Single<List<LocationWithWeather>> {
         return Single.create<List<LocationWithWeather>> { emitter: SingleEmitter<List<LocationWithWeather>> ->
             emitter.onSuccess(list.filter { it.name.toUpperCase().startsWith(text.toUpperCase()) })

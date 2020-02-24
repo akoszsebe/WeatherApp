@@ -1,6 +1,7 @@
 package com.example.weatherapp.data.model
 
 import androidx.room.*
+import com.example.weatherapp.data.persistance.typeconverter.Converter
 import com.google.gson.annotations.SerializedName
 
 data class FiveDayForecast(
@@ -14,9 +15,7 @@ data class FiveDayForecast(
     var list: List<WeatherListElement>,
     @ColumnInfo(name = "fiveDayForecastId")
     var id: Long
-) {
-    constructor() : this(City(), listOf<WeatherListElement>(), 0)
-}
+)
 
 @Entity
 data class FiveDayForecastDb(
@@ -25,8 +24,6 @@ data class FiveDayForecastDb(
     @Embedded
     var city: City
 ) {
-    constructor() : this(-1, City())
-
     constructor(fiveDayForecast: FiveDayForecast) :
             this(
                 fiveDayForecast.city.id,
@@ -39,9 +36,7 @@ data class City(
     var name: String,
     var country: String,
     var timezone: Long
-) {
-    constructor() : this(-1, "", "", 0L)
-}
+)
 
 @Entity
 data class WeatherListElement(
@@ -52,9 +47,9 @@ data class WeatherListElement(
     var dt: Long,
     @Embedded
     var main: MainInfo,
-    @Ignore var weather: List<Weather>
-) {
-    constructor() : this(0, -1, -1, MainInfo(), listOf<Weather>())
-}
+    @TypeConverters(Converter::class)
+    var weather: List<Weather>
+)
+
 
 
